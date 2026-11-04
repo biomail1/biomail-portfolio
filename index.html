@@ -72,7 +72,7 @@
       <div class="work-thumbs">
         <button type="button" data-i="4" class="wide" aria-label="Open photo 5"><img src="assets/work/okrug-1.jpg" alt="" loading="lazy"></button>
       </div>
-      <video class="work-video" src="assets/work/okrug-street.mp4" width="1280" height="2276" muted loop playsinline autoplay preload="metadata"
+      <video class="work-video" src="assets/work/okrug-street.mp4" width="720" height="1280" muted loop playsinline autoplay preload="metadata"
         disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
     </article>
 
@@ -81,7 +81,7 @@
       <div class="work-thumbs">
         <button type="button" data-i="5" class="wide" aria-label="Open photo 6"><img src="assets/work/amstr-1.jpg" alt="" loading="lazy"></button>
       </div>
-      <video class="work-video crop-frame" src="assets/work/amstr.mp4" width="1280" height="720" muted loop playsinline autoplay preload="metadata"
+      <video class="work-video" src="assets/work/amstr.mp4" width="1280" height="720" muted loop playsinline autoplay preload="metadata"
         disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
     </article>
     <span class="section-label" data-i18n="work">Work</span>
@@ -459,8 +459,8 @@
   // Видео — с случайной секунды. Только пока открыт Home и вкладка видна.
   const ghostLayer = document.querySelector('.ghosts');
   const GHOSTS = [
-    { v: 'assets/work/vhs.mp4', r: 4 / 3 }, { v: 'assets/work/korzh.mp4', r: 16 / 9 },
-    { v: 'assets/work/okrug-street.mp4', r: 9 / 16 }, { v: 'assets/work/amstr.mp4', r: 16 / 9 },
+    { v: 'assets/home/vhs.mp4', r: 4 / 3 }, { v: 'assets/home/korzh.mp4', r: 16 / 9 },
+    { v: 'assets/home/okrug-street.mp4', r: 9 / 16 }, { v: 'assets/home/amstr.mp4', r: 16 / 9 },
   ];   // только куски видео (фото пользователь попросил убрать)
   let ghostsAlive = 0, ghostBag = [];
   function nextGhost() {   // «мешок»: все материалы по разу в случайном порядке, потом новый круг
@@ -517,7 +517,7 @@
       media.pause(); g.remove(); ghostsAlive--;
       scheduleGhost();
     };
-    Promise.race([ready, new Promise(ok => setTimeout(ok, 2500))]).then(() => { level(); probeTimer = setInterval(level, 250); }).then(() =>
+    Promise.race([ready, new Promise(ok => setTimeout(ok, 2500))]).then(() => { level(); probeTimer = setInterval(level, 500); }).then(() =>
       g.animate(hard([
         { opacity: 0 }, { opacity: peak * .7, offset: .1 }, { opacity: peak * .15, offset: .2 }, { opacity: peak, offset: .32 },
         { opacity: peak * .5, offset: .5 }, { opacity: peak, offset: .62 }, { opacity: peak },
