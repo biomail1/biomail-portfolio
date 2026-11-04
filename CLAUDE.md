@@ -26,8 +26,11 @@
 
 ## GitHub
 
-Репозиторий https://github.com/biomail1/biomail-portfolio — ЗАКРЫТЫЙ (там фото, видео, почта), ветка `main`
-(05.11.2026). Аккаунт пользователя — biomail1; вход GitHub CLI сделан (`gh auth login --web`: в терминале-вкладке
+Репозиторий https://github.com/biomail1/biomail-portfolio — ОТКРЫТЫЙ (сначала был закрытым; пользователь попросил
+открыть, чтобы отправлять ссылку), ветка `main` (05.11.2026). САЙТ В ИНТЕРНЕТЕ — GitHub Pages из `main` / корень:
+**https://biomail1.github.io/biomail-portfolio/** — обновляется сам через ~1 мин после `git push`.
+Pages чувствителен к регистру в именах файлов (Windows — нет): пути в коде должны точно совпадать с именами.
+CLAUDE.md тоже виден всем. Аккаунт пользователя — biomail1; вход GitHub CLI сделан (`gh auth login --web`: в терминале-вкладке
 Enter не доходил — запускать в фоне и давать пользователю код для github.com/login/device).
 Git и gh стоят в `C:\Program Files\Git\cmd` и `C:\Program Files\GitHub CLI` — в старой оболочке PATH может не
 обновиться: `$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')`.
