@@ -24,6 +24,17 @@
   (исходник сначала скопировать в `.claude/tmp/source.mp4`, после — удалить `.claude/tmp`). Пишет canvas MediaRecorder'ом
   в mp4 H.264, без звука, до 1280px по ширине, ~5 Мбит/с; результат в `window.result`.
 
+## GitHub
+
+Репозиторий https://github.com/biomail1/biomail-portfolio — ЗАКРЫТЫЙ (там фото, видео, почта), ветка `main`
+(05.11.2026). Аккаунт пользователя — biomail1; вход GitHub CLI сделан (`gh auth login --web`: в терминале-вкладке
+Enter не доходил — запускать в фоне и давать пользователю код для github.com/login/device).
+Git и gh стоят в `C:\Program Files\Git\cmd` и `C:\Program Files\GitHub CLI` — в старой оболочке PATH может не
+обновиться: `$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')`.
+Автор коммитов — biomail1 с noreply-почтой GitHub. В репозиторий НЕ идут (`.gitignore`): `_архив/`,
+`phone-preview.html` (собирается скриптом), `.claude/tmp/`. После правок: `git add -A; git commit -m "..."; git push`
+— только когда пользователь просит залить.
+
 ## Проверка с телефона
 
 Страница-Artifact https://claude.ai/artifact/HR5fP5sqxewzTo9DRAx3ky (пользователь открыл доступ «всем, у кого есть ссылка»;
