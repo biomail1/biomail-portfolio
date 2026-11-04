@@ -1,0 +1,7 @@
+# черновики и копии — в репозиторий не идут
+_архив/
+phone-preview.html
+.claude/tmp/
+.claude/settings.local.json
+Thumbs.db
+desktop.ini

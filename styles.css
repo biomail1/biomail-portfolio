@@ -1,0 +1,541 @@
+:root {
+  --bg: hsl(200, 40%, 3%);
+  --fg: #e3e6e8;
+  --dim: rgba(227, 230, 232, .45);
+  --line: rgba(227, 230, 232, .14);
+  --olive: hsl(62, 35%, 62%);
+  --glow: 225, 215, 190;        /* тёплый белый для свечения, в rgb */
+  /* как у референса (azarstrato.com — Helvetica Neue 85 Heavy, платный): ближайший бесплатный аналог —
+     Inter Tight Heavy; есть латиница и кириллица с украинскими буквами */
+  --font: 'Inter Tight', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --weight: 800;
+  --mono: var(--font);          /* старое имя — им пользуются страницы-демо */
+  /* подписи внизу страницы (название раздела, biomail) — тонкий моноширинный, как таймкод на плёнке */
+  --label-font: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  /* навигация */
+  --nav-size: 12.5px;
+  --nav-track: .01em;           /* жирному гротеску разрядка почти не нужна */
+  --nav-gap: 44px;
+  --gutter: 24px;
+
+  /* масштаб силуэта в оверлее Work (на широком экране фото и так обрезано по ширине — крупнее не нужно) */
+  --hold-scale: 1.05;   /* было 1.15 — уменьшили, чтобы силуэт было больше видно */
+  /* то же для перехода: --hold-<раздел> читает скрипт */
+  --hold-work: 1.05;
+  --hold-about: 1.05;
+  --hold-contact: 1.05;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); scroll-behavior: smooth; overflow-x: hidden; }   /* рывки перехода не дают прокрутки вбок */
+/* body обязательно прозрачный: фон с полосами (.bg, z-index: -1) рисуется под ним, тёмный цвет задан на html.
+   Если хостинг/обёртка подставит body свой фон (у страниц Claude это белый), он закроет полосы — поэтому !important */
+body { background: transparent !important; color: var(--fg); font-family: var(--font); font-weight: var(--weight); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+a { color: inherit; text-decoration: none; }
+a:focus-visible { outline: 1px solid var(--olive); outline-offset: 4px; }
+
+/* навигация: на компьютере сверху по центру, без разделителей */
+/* меню стоит в начале страницы и уезжает вместе с ней (не закреплено — иначе налезает на фото и заголовки);
+   внизу страницы — маленькое меню .nav-foot */
+.nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: center;
+  padding: calc(22px + env(safe-area-inset-top, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px)) 22px max(var(--gutter), env(safe-area-inset-left, 0px));
+}
+.nav ul { list-style: none; display: flex; gap: 10px var(--nav-gap); }
+.nav a {
+  position: relative; display: inline-block; padding: 6px 0;
+  font: var(--weight) var(--nav-size)/1 var(--font); letter-spacing: var(--nav-track);   /* с заглавной: Home, Work… */
+  /* разрядка добавляет пробел и после последней буквы — компенсируем, чтобы пункт был по центру */
+  margin-right: calc(var(--nav-track) * -1);
+  color: var(--dim); transition: color .3s, text-shadow .4s;
+}
+.nav a[aria-current="true"] { color: var(--fg); }
+
+/* «зажжённый» пункт (класс .lit ставит скрипт: наведение мышью, клавиатура или касание на телефоне) */
+.nav a.lit {
+  color: #fff;
+  text-shadow:
+    0 0 3px rgba(var(--glow), 1),
+    0 0 10px rgba(var(--glow), .85),
+    0 0 22px rgba(var(--glow), .6),
+    0 0 40px rgba(var(--glow), .35);
+}
+/* подчёркивание: белая линия ровно по слову, загорается с перебоями, как люминесцентная лампа */
+.nav a::after {
+  content: ''; position: absolute; left: 0; right: var(--nav-track); bottom: 0; height: 1px;
+  background: #fff; opacity: 0; pointer-events: none;
+}
+.nav a.lit::after { opacity: 1; animation: line-tube .7s steps(1, end); }
+/* открытый раздел подчёркнут всегда (в обоих меню); при наведении линия так же мигает, как лампа */
+.nav a[aria-current="true"]::after, .nav-foot a[aria-current="true"]::after { opacity: 1; }
+@keyframes line-tube {
+  0% { opacity: 0; } 5% { opacity: 1; } 10% { opacity: 0; } 18% { opacity: .8; } 22% { opacity: 0; }
+  42% { opacity: 1; } 48% { opacity: .3; } 54%, 100% { opacity: 1; }
+}
+
+/* разделы — как вкладки: виден только открытый (остальные hidden, переключает скрипт) */
+body { position: relative; }
+.section {
+  position: relative;
+  min-height: 100vh; min-height: 100svh;
+  display: flex; align-items: flex-end;
+  padding: 96px max(var(--gutter), env(safe-area-inset-right, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
+}
+.section[hidden] { display: none; }
+
+/* маленькое меню в самом низу страницы: на компьютере — на одной линии с подписью раздела и biomail, по центру */
+.nav-foot {
+  position: absolute; left: 0; right: 0; z-index: 2; bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+  display: flex; justify-content: center; gap: 24px; pointer-events: none;
+}
+.nav-foot[hidden] { display: none; }
+.nav-foot a {
+  position: relative; pointer-events: auto; padding: 4px 0; margin: -4px 0;
+  font-size: 11px; line-height: 1; letter-spacing: .04em; color: var(--dim); transition: color .3s, text-shadow .4s;
+}
+.nav-foot a[aria-current="true"] { color: var(--fg); }
+.nav-foot a.lit { color: #fff; text-shadow: 0 0 3px rgba(var(--glow), 1), 0 0 10px rgba(var(--glow), .8), 0 0 22px rgba(var(--glow), .5); }
+.nav-foot a::after {
+  content: ''; position: absolute; left: 0; right: .04em; bottom: 0; height: 1px;
+  background: #fff; opacity: 0; pointer-events: none;
+}
+.nav-foot a.lit::after { opacity: 1; animation: line-tube .7s steps(1, end); }
+
+/* переключатель языка EN / UA — правый верхний угол, в стиле меню */
+.lang {
+  position: absolute; z-index: 11; display: flex; gap: 10px;
+  top: calc(22px + env(safe-area-inset-top, 0px)); right: max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+.lang button {
+  font: var(--weight) var(--nav-size)/1 var(--font); letter-spacing: var(--nav-track);
+  color: var(--dim); background: none; border: 0; padding: 6px 0; cursor: pointer; transition: color .3s, text-shadow .4s;
+}
+.lang button[aria-pressed="true"] { color: var(--fg); }
+@media (hover: hover) {
+  .lang button:hover { color: #fff; text-shadow: 0 0 3px rgba(var(--glow), 1), 0 0 10px rgba(var(--glow), .85), 0 0 22px rgba(var(--glow), .6); }
+}
+
+/* подпись в правом нижнем углу — в самом низу страницы (не закреплена на экране, чтобы не висеть поверх фото),
+   на одной линии с подписью раздела */
+.signature {
+  position: absolute; z-index: 2; pointer-events: none;
+  right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+}
+.signature, .section-label {
+  font: 400 11px/1 var(--label-font); letter-spacing: .02em; color: var(--dim);
+}
+/* подпись раздела внизу слева убрана на всех вкладках (просьба пользователя 05.11); biomail справа остаётся */
+.section-label { position: relative; z-index: 1; visibility: hidden; }   /* не display:none — в Work держит место под нижним меню */
+
+/* силуэт с фото: затемнён, края растворяются в темноте; используется и в оверлее Work, и во вспышке перехода */
+.silhouette { position: absolute; inset: 0; transform-origin: 50% 45%; }
+/* фото растянуто на весь экран (как на телефоне) — силуэт заполняет кадр, а не висит «яйцом» по центру */
+.silhouette img {
+  position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
+  object-fit: cover; object-position: 50% 30%;
+  -webkit-mask-image: radial-gradient(ellipse 80% 62% at 50% 48%, #000 35%, transparent 95%);
+  mask-image: radial-gradient(ellipse 80% 62% at 50% 48%, #000 35%, transparent 95%);
+}
+/* затемнение вокруг фигуры — отдельным слоем, чтобы негатив его не переворачивал */
+.silhouette .shade {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 35%, hsla(200, 40%, 3%, .55) 75%, hsla(200, 40%, 3%, .9) 100%);
+}
+/* оливковый негатив, сильно размытый — цвет полос фона */
+.silhouette.olive-neg img {
+  filter: invert(1) grayscale(1) sepia(.85) hue-rotate(22deg) saturate(.9) contrast(1.7) brightness(.45) blur(8px);
+}
+
+/* оверлей раздела Work, наложен «экраном» — сквозь него видны зерно и полосы фона.
+   На первом экране — силуэт, к низу экрана он плавно переходит в однотонный светлый тон,
+   который тянется вниз под фото и видео и гаснет к концу раздела */
+.work-overlay {
+  --work-fill: rgb(128, 131, 122);   /* тон продолжения — как светлые места силуэта */
+  position: absolute; inset: 0;
+  overflow: hidden; pointer-events: none; mix-blend-mode: screen; opacity: .85;
+}
+.work-top {
+  position: absolute; top: 0; left: 0; right: 0; height: 100vh; height: 100svh; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
+  mask-image: linear-gradient(to bottom, #000 65%, transparent);
+}
+.work-fill {
+  position: absolute; left: 0; right: 0; top: 55vh; top: 55svh; bottom: 0;
+  background: linear-gradient(to bottom, transparent, var(--work-fill) 35vh, var(--work-fill) calc(100% - 50vh), transparent);
+}
+/* силуэт Work закреплён в экране за материалами; сдвиг по вертикали (глаза — в просветах) задаёт скрипт eyesTick */
+#work .work-top {
+  position: fixed; will-change: transform;
+  /* края растворяются: снизу — как было; сверху — только когда силуэт сдвинут (--top-fade от 0 до 1 задаёт скрипт) */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 calc(var(--top-fade, 0) * 30%), #000 65%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 calc(var(--top-fade, 0) * 30%), #000 65%, transparent);
+}
+@media (prefers-reduced-motion: reduce) { #work .work-top { position: absolute; } }
+.work-overlay .silhouette { transform: scale(var(--hold-scale)); animation: work-shake 2.4s steps(1, end) infinite; }
+/* минимальная тряска фона Work — как плёнка, чуть гуляющая в кадровом окне проектора: смещения в 1–3px,
+   неровными рывками; translate отдельно от transform, чтобы не сбивать масштаб */
+@keyframes work-shake {
+  0% { translate: 0 0; } 7% { translate: 1px -2px; } 11% { translate: 0 1px; } 23% { translate: -2px 0; }
+  31% { translate: -1px 2px; } 34% { translate: 1px 0; } 48% { translate: 0 -1px; } 52% { translate: 2px 1px; }
+  63% { translate: 0 2px; } 71% { translate: -1px -1px; } 78% { translate: 1px 3px; } 81% { translate: 0 0; }
+  92% { translate: -2px 1px; } 100% { translate: 0 0; }
+}
+/* зерно поверх силуэта: светлый силуэт в режиме «экран» высветляет зерно фона, поэтому даём своё —
+   тот же тайл, что у фона (его подставляет скрипт) */
+.work-grain {
+  position: absolute; inset: -100%; width: 300%; height: 300%;
+  background-size: 256px; opacity: .12; animation: bg-grain .9s steps(6) infinite;
+}
+
+/* раздел Work: превью идут сверху вниз в потоке страницы (раздел может быть выше экрана), подпись — после них */
+/* верх раздела — под силуэт-оверлей; проекты начинаются на ~40% высоты экрана, чтобы видео было видно сразу (было 82svh) */
+#work { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 120px; padding-top: 40vh; padding-top: 40svh; }
+#work .section-label { align-self: flex-start; }
+
+/* превью работ: сетка в 2 колонки — вертикальные фото по два в ряд, горизонтальные (.wide) на всю ширину */
+.work-thumbs {
+  position: relative; z-index: 1; width: min(620px, 100%); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  grid-auto-flow: dense;   /* вертикальное фото может встать рядом с другим вертикальным, даже если между ними горизонтальное */
+}
+.work-thumbs button { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; overflow: hidden; }
+.work-thumbs button.wide { grid-column: span 2; }
+.work-thumbs img {
+  display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover;
+  transition: opacity .35s, filter .35s, transform .5s;
+}
+.work-thumbs .wide img { aspect-ratio: 16 / 9; }
+/* Home: «призраки» — кадры и куски видео из Work в темноте главной: тусклые, «экраном», размытые, края уходят в темноту,
+   своё зерно. Под меню и подписями (z-index 0), нажатия не ловят. Размер, место и порядок — скрипт */
+.ghosts { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.ghost {
+  /* всегда одно место (пометил пользователь): во всю ширину, от 37% высоты экрана до низа, видео заполняет его (cover) */
+  position: absolute; left: 0; right: 0; top: 21%; bottom: 0;
+  opacity: 0; mix-blend-mode: screen; overflow: hidden;
+  /* кадр во всю ширину (не овал); размыт сверху (длинно) и снизу — у подписи biomail уже растворился */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.1) 10%, rgba(0,0,0,.3) 21%, rgba(0,0,0,.6) 32%, rgba(0,0,0,.88) 43%, #000 52%, #000 66%, rgba(0,0,0,.6) 78%, rgba(0,0,0,.2) 88%, transparent 95%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.1) 10%, rgba(0,0,0,.3) 21%, rgba(0,0,0,.6) 32%, rgba(0,0,0,.88) 43%, #000 52%, #000 66%, rgba(0,0,0,.6) 78%, rgba(0,0,0,.2) 88%, transparent 95%);
+}
+/* яркость выравнивает скрипт: opacity видео — по светлоте кадра (светлые сцены прозрачнее) */
+.ghost video, .ghost img {
+  display: block; width: 100%; height: 100%; object-fit: cover; opacity: .2;
+  transition: opacity .35s linear;
+  filter: grayscale(.8) saturate(.5) contrast(1.35) brightness(.85) blur(1.4px);   /* контраст — силуэты, а не серая пелена */
+}
+/* лёгкое плёночное зерно поверх фото — то же, что у фона (--grain ставит скрипт), overlay — не темнит и не высветляет */
+.work-thumbs button { position: relative; }
+.work-thumbs button::after {
+  content: ""; position: absolute; inset: -100%; width: 300%; height: 300%; pointer-events: none;
+  background: var(--grain) 0 0 / 256px; mix-blend-mode: overlay; opacity: .1;
+  animation: bg-grain .9s steps(6) infinite;
+}
+@media (prefers-reduced-motion: reduce) { .work-thumbs button::after { animation: none; } }
+/* превью везде в полном цвете (приглушение на компьютере убрали — «тусклые»); при наведении чуть приближаются */
+@media (hover: hover) {
+  .work-thumbs button:hover img, .work-thumbs button:focus-visible img { transform: scale(1.03); }
+}
+
+/* проект в Work: заголовок → видео → фото, вплотную друг к другу; между проектами — большой отступ (gap у #work) */
+.work-project {
+  position: relative; z-index: 1; width: min(620px, 100%); margin: 0 auto;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.work-title {
+  margin: 0; font: var(--weight) var(--nav-size)/1 var(--font); letter-spacing: var(--nav-track); color: var(--fg);
+}
+/* строка заголовка: название слева, ссылка на клиента (Instagram) справа на той же линии */
+.work-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.work-link {
+  font: var(--weight) var(--nav-size)/1 var(--font); letter-spacing: var(--nav-track); color: var(--fg);
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; opacity: .75;
+  transition: opacity .2s, text-shadow .2s;
+}
+.work-link:hover, .work-link:focus-visible, .work-link:active {
+  opacity: 1; text-shadow: 0 0 6px rgba(var(--glow), .9), 0 0 16px rgba(var(--glow), .5);
+}
+/* видео — как гифка: само играет по кругу, без звука и кнопок; пропорции берёт из width/height в разметке */
+.work-video {
+  display: block; width: 100%; height: auto; pointer-events: none; background: #000;
+}
+/* видео с чёрной рамкой-плёнкой по краям (amstr.mp4: ~9px сбоку, ~7px сверху/снизу из 1280×720, скруглённые углы):
+   увеличиваем и обрезаем обратно до своего места — рамки не видно, место на странице то же */
+.work-video.crop-frame { transform: scale(1.055); clip-path: inset(2.61%); }
+/* проект с вертикальным видео (рилс 9:16): колонка узкая — видео не выше 88% экрана, заголовок прямо над ним */
+.work-project.tall { width: min(calc(88svh * 9 / 16), 100%); }
+
+/* просмотр: карусель на весь экран, открывается по нажатию на превью; без подписей и вспышек */
+.viewer {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; flex-direction: column; justify-content: center;
+  background: hsla(200, 40%, 3%, .94);
+  opacity: 0; visibility: hidden; transition: opacity .35s, visibility .35s;
+}
+.viewer.open { opacity: 1; visibility: visible; }
+.viewer-close {
+  position: absolute; top: calc(22px + env(safe-area-inset-top, 0px)); right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  font: var(--weight) var(--nav-size)/1 var(--font); color: var(--dim); background: none; border: 0; padding: 6px 0; cursor: pointer;
+  transition: color .3s, text-shadow .4s;
+}
+@media (hover: hover) {
+  .viewer-close:hover { color: #fff; text-shadow: 0 0 3px rgba(var(--glow), 1), 0 0 10px rgba(var(--glow), .85), 0 0 22px rgba(var(--glow), .6); }
+}
+.car-track {
+  position: relative; display: flex; align-items: center; gap: 16px;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  padding: 0 50%;   /* поля по краям, чтобы первое и последнее фото (любой ширины) тоже вставали по центру */
+  scrollbar-width: none; -webkit-overflow-scrolling: touch; cursor: grab;
+}
+.car-track::-webkit-scrollbar { display: none; }
+.car-track.dragging { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; }
+.car-track img {
+  flex: none; height: min(76vh, 780px); width: auto; max-width: none;
+  scroll-snap-align: center; user-select: none; -webkit-user-drag: none;
+  opacity: .35; filter: grayscale(.6) brightness(.75); transition: opacity .5s ease, filter .5s ease;
+}
+.car-track img.is-active { opacity: 1; filter: none; }
+.car-nav {
+  display: flex; justify-content: center; gap: 40px; margin-top: 18px;
+}
+.car-nav button {
+  font: var(--weight) var(--nav-size)/1 var(--font); color: var(--dim); background: none; border: 0; padding: 8px 4px; cursor: pointer;
+  transition: color .3s, text-shadow .4s;
+}
+.car-nav button:disabled { opacity: .25; cursor: default; }
+@media (hover: hover) {
+  .car-nav button:not(:disabled):hover {
+    color: #fff; text-shadow: 0 0 3px rgba(var(--glow), 1), 0 0 10px rgba(var(--glow), .85), 0 0 22px rgba(var(--glow), .6);
+  }
+}
+
+/* вспышка перехода в Work — поверх страницы, под меню */
+.work-flash, .work-flare { position: fixed; inset: 0; z-index: 5; pointer-events: none; opacity: 0; mix-blend-mode: screen; }
+.work-flare { background: radial-gradient(ellipse at 50% 50%, hsla(62, 45%, 42%, .45), hsla(62, 50%, 18%, .25) 50%, transparent 80%); }
+/* About: фото читается целиком — без маски-эллипса и без растворения к низу (на телефоне — вся плёнка из 3 кадров) */
+.about-overlay .work-top { -webkit-mask-image: none; mask-image: none; }
+.about-overlay .silhouette { transform: scale(var(--hold-about)); }
+.about-overlay .silhouette img, .work-flash[data-shot="about"] img { -webkit-mask-image: none; mask-image: none; object-position: 50% 50%; }
+.about-overlay picture { display: contents; }
+/* фон About — тёмно-синий негатив, но чёткий: без размытия и контрастнее, чтобы собаку было видно отчётливо.
+   Обычным слоем, не «экраном» — иначе выцветает. Тот же фильтр — CYAN_NEG в скрипте (последний кадр перехода) */
+.about-overlay { mix-blend-mode: normal; opacity: .92; }
+.silhouette.cyan-neg img {
+  filter: invert(1) grayscale(1) contrast(1.9) brightness(.5);
+}
+/* синяя тонировка «умножением»: серые средние тона негатива уходят в тёмно-синий, детали остаются */
+.silhouette.cyan-neg .shade, .work-flash[data-shot="about"] .shade {
+  mix-blend-mode: multiply;
+  background:
+    radial-gradient(ellipse 75% 70% at 50% 50%, transparent 45%, hsla(200, 40%, 3%, .7) 100%),
+    hsl(216, 70%, 38%);   /* темнее: был hsl(214, 72%, 46%) */
+}
+.about-overlay .work-grain { opacity: .06; }
+
+/* текст About — шрифт Inter Tight (тонкие начертания), по центру экрана, компактно, как титры: на телефоне весь блок умещается
+   в средний кадр плёнки (между чёрными полосами). Размеры — в долях высоты экрана (--u), чтобы влезать на любом телефоне.
+   Цвета: --h — заголовки (подписи категорий), --t — текст */
+#about { flex-direction: column; align-items: center; justify-content: center; }
+#about .section-label { position: absolute; left: max(var(--gutter), env(safe-area-inset-left, 0px)); bottom: calc(32px + env(safe-area-inset-bottom, 0px)); }
+/* затемнение к центру — чтобы текст читался поверх синего негатива и его мерцания */
+#about::after {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse 70% 45% at 50% 50%, hsla(200, 40%, 3%, .7), hsla(200, 40%, 3%, .25) 70%, transparent);
+}
+.about-text {
+  --h: hsl(0, 100%, 38%); --t: hsl(64, 0%, 63%);   /* подобрал пользователь ползунками: тёмно-красный и серый */
+  --u: min(1vh, 1svh, 9px);
+  position: absolute; z-index: 1; left: 50%; top: 50%; translate: -50% -50%;
+  width: min(440px, calc(100% - 2 * var(--gutter))); text-align: center;
+  font-family: var(--font); color: var(--t);
+}
+/* тот же Inter Tight, что в меню, но тонкий (300) и крупнее — отличается от жирных вкладок */
+.about-line { font: 500 calc(var(--u) * 1.6)/1.4 var(--font); letter-spacing: .01em; }
+.about-bio { margin: calc(var(--u) * 1.6) auto 0; max-width: 30em; font: 300 calc(var(--u) * 1.6)/1.5 var(--font); opacity: .85; }
+.gear-title { display: none; }   /* заголовок «Оборудование» не нужен — категории подписаны и так */
+/* оборудование — компактно, по общей оси в центре: категория справа от оси, модель слева */
+.gear { margin-top: calc(var(--u) * 2.2); display: flex; flex-direction: column; gap: calc(var(--u) * .7); }
+.gear div { display: grid; grid-template-columns: 1fr 1.35fr; align-items: baseline; gap: 1em; }
+.gear dt { text-align: right; }
+.gear dd { text-align: left; white-space: nowrap; }
+.gear dt { font: 500 calc(var(--u) * 1.05)/1 var(--font); text-transform: uppercase; letter-spacing: .2em; color: var(--h); opacity: .8; }
+.gear dd { font: 500 calc(var(--u) * 1.55)/1.25 var(--font); }
+
+@media (min-width: 641px) { .about-text { --u: 12px; width: min(calc(var(--u) * 44), calc(100% - 2 * var(--gutter))); } }   /* компьютер — крупнее (было 10px) */
+
+/* компьютер: силуэт Work целиком (голова и плечи по центру, как на телефоне) — фото по высоте экрана, а не
+   растянуто на всю ширину (тогда была видна одна шапка); края фото растворяются. Так же — кадры перехода в Work */
+@media (min-width: 641px) {
+  .work-overlay:not(.about-overlay) .silhouette img, .work-flash[data-shot="work"] img {
+    right: auto; left: 50%; width: auto; height: 100%; translate: -50% 0;
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 46%, #000 45%, transparent 100%);
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 46%, #000 45%, transparent 100%);
+  }
+  /* колонка проектов шире — на широком экране было много пустого места по бокам */
+  .work-project, .work-thumbs { width: min(860px, 100%); }
+}
+
+/* фон Contact — вода, холодный серебристый негатив без тонировки (тот же фильтр — WATER_NEG в скрипте) */
+.silhouette.water-neg img { filter: invert(1) grayscale(1) contrast(1.7) brightness(.8); }
+.contact-overlay .silhouette { transform: scale(var(--hold-contact)); animation: none; }   /* без тряски — вода и так движется */
+.work-flash[data-shot="contact"] img { -webkit-mask-image: none; mask-image: none; }
+/* на компьютере вертикальный кадр развёрнут на 90° — вода целиком лежит горизонтально, а не обрезается */
+@media (min-width: 641px) {
+  .silhouette.water-neg img, .work-flash[data-shot="contact"] img {
+    inset: auto; top: 50%; left: 50%; width: 100vh; height: 100vw; translate: -50% -50%; rotate: 90deg;
+  }
+}
+/* вода «течёт»: две копии кадра медленно плывут в одну сторону (ОТ зрителя — от камня внизу вглубь кадра)
+   и по очереди проявляются и гаснут со сдвигом в полцикла — движение без остановок и без видимого шва.
+   transform — в собственных осях кадра, поэтому на компьютере (кадр развёрнут) течёт так же */
+.contact-overlay .silhouette img { animation: water-flow 14s linear infinite; }
+.contact-overlay .silhouette img.flow { animation-delay: -7s; }
+@keyframes water-flow {
+  0% { transform: scale(1.22) translateY(7%); opacity: 0; }
+  25%, 75% { opacity: 1; }
+  100% { transform: scale(1.22) translateY(-7%); opacity: 0; }
+}
+/* телефон: течение заметнее — быстрее и с большим ходом */
+@media (max-width: 640px) {
+  .contact-overlay .silhouette img { animation: water-flow-m 12s linear infinite; }   /* 8 с — «слишком быстро» */
+  .contact-overlay .silhouette img.flow { animation-delay: -6s; }
+}
+@keyframes water-flow-m {
+  0% { transform: scale(1.32) translateY(12%); opacity: 0; }
+  25%, 75% { opacity: 1; }
+  100% { transform: scale(1.32) translateY(-12%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-overlay .silhouette img { animation: none; transform: scale(1.1); }
+  .contact-overlay .silhouette img.flow { display: none; }
+}
+
+/* рябь вместе с течением: SVG-фильтр искажения; на телефоне — облегчённый (см. #water-ripple-lite в index.html) */
+.contact-overlay .silhouette { filter: url(#water-ripple); }
+@media (max-width: 640px) { .contact-overlay .silhouette { filter: url(#water-ripple-lite); } }
+@media (prefers-reduced-motion: reduce) { .contact-overlay .silhouette { filter: none; } }
+/* виньетирование у воды слабое и широкое — вода видна до краёв */
+.silhouette.water-neg .shade { background: radial-gradient(ellipse 95% 90% at 50% 50%, transparent 60%, hsla(200, 40%, 3%, .35) 100%); }
+
+/* отсвет молнии на воде (мигания задаёт скрипт strike): холодный бело-голубой свет сверху, место — --lx */
+.lightning {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse 60% 55% at var(--lx, 50%) 0%, rgba(235, 242, 255, .85), rgba(170, 190, 225, .35) 45%, transparent 75%),
+    linear-gradient(to bottom, rgba(200, 215, 240, .18), transparent 70%);
+}
+
+/* затемнение к центру под контактами */
+#contact::after {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 44% at 50% 50%, hsla(200, 40%, 3%, .84), hsla(200, 40%, 3%, .35) 70%, transparent),   /* под контактами и формой */
+    linear-gradient(to bottom, hsla(200, 40%, 3%, .55), transparent 22%);   /* под меню — чтобы читалось на светлой воде */
+}
+
+/* Contact — тот же блок, что в About; ссылки крупнее и при наведении загораются тёплым белым, как меню */
+.contact-text .gear { margin-top: 0; gap: calc(var(--u) * 1.6); }
+.contact-text .gear dd { font-size: calc(var(--u) * 1.9); }
+.contact-text .gear dt { opacity: 1; }
+/* подписи в Contact (Email, Telegram, Instagram; над полями формы — так же, в правиле формы) — жирнее и крупнее */
+.contact-text .gear dt {
+  font-weight: var(--weight); font-size: calc(var(--u) * 1.3); letter-spacing: .14em;
+}
+
+/* форма «написать письмо» под контактами: поля без рамок — только тонкая линия снизу, подписи как у контактов */
+.contact-form { margin-top: calc(var(--u) * 3.4); display: flex; flex-direction: column; gap: calc(var(--u) * 1.6); text-align: left; }
+.contact-form label { display: flex; flex-direction: column; gap: calc(var(--u) * .6); }
+.contact-form label span {
+  font: var(--weight) calc(var(--u) * 1.3)/1 var(--font); text-transform: uppercase; letter-spacing: .14em; color: var(--h);
+}
+.contact-form input, .contact-form textarea {
+  font: 300 max(16px, calc(var(--u) * 1.6))/1.4 var(--font);   /* не меньше 16px — иначе iPhone приближает поле */
+  color: var(--fg); background: transparent; border: 0; border-bottom: 1px solid rgba(227, 230, 232, .32);
+  padding: 4px 0 6px; outline: none; border-radius: 0; resize: none; width: 100%;
+  transition: border-color .3s;
+}
+.contact-form input:focus, .contact-form textarea:focus { border-bottom-color: rgba(var(--glow), .7); }
+.contact-form button {
+  align-self: center; margin-top: calc(var(--u) * .6);
+  font: var(--weight) var(--nav-size)/1 var(--font); color: var(--fg); background: none; border: 0; padding: 8px 4px; cursor: pointer;
+  transition: color .3s, text-shadow .4s;
+}
+@media (hover: hover) {
+  .contact-form button:hover { color: #fff; text-shadow: 0 0 3px rgba(var(--glow), 1), 0 0 10px rgba(var(--glow), .85), 0 0 22px rgba(var(--glow), .6); }
+}
+.contact-form button:focus-visible { outline: 1px solid var(--olive); outline-offset: 4px; }
+.contact-note { text-align: center; font: 400 10px/1.4 var(--label-font); color: var(--dim); }
+.contact-note.warn { color: var(--h); }   /* на чистом тёмном фоне красные подписи без приглушения — иначе плохо читаются */
+.contact-text a { color: inherit; transition: color .3s, text-shadow .4s; }
+/* видно, что это ссылки (на телефоне наведения нет): тонкое подчёркивание; касание — вспышка свечения (стрелки «↗» убрали) */
+.contact-text .gear a {
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .25em;
+  text-decoration-color: rgba(227, 230, 232, .35);
+}
+.contact-text .gear a:active { color: #fff; text-shadow: 0 0 3px rgba(var(--glow), 1), 0 0 10px rgba(var(--glow), .85), 0 0 22px rgba(var(--glow), .6); }
+@media (hover: hover) {
+  .contact-text a:hover { color: #fff; text-shadow: 0 0 3px rgba(var(--glow), 1), 0 0 10px rgba(var(--glow), .8), 0 0 22px rgba(var(--glow), .5); }
+}   /* на компьютере кадров плёнки нет — чуть крупнее */
+/* чёрные полосы на стыках кадров плёнки — только на телефоне (там плёнка из 3 кадров); top считает скрипт */
+.strip-line { display: none; }
+@media (max-width: 640px) {
+  .strip-line { display: block; position: absolute; left: 0; right: 0; height: 2px; margin-top: -1px; background: #000; z-index: 1; }
+}
+/* мерцание (класс .raw ставит скрипт в случайные моменты): на мгновение — кадр из перехода в About:
+   тёмная контрастная тень фото (SHADOW в скрипте) с той же синей тонировкой. Оливковый вариант — отвергнут */
+.about-overlay .silhouette.raw img { filter: grayscale(1) contrast(3) brightness(.55) blur(6px); }   /* сильное зерно давало серую пелену */
+/* переход Home → About: цветной кадр вырывается из темноты, вписанный в фон, как силуэт в Work:
+   наложен «экраном» (сквозь него видны фон и полосы), края растворяются, сверху своё зерно; фильтры (размытие,
+   приглушённый цвет) задаёт скрипт. На компьютере кадр горизонтальный, на телефоне развёрнут вертикально (rotate) */
+.about-first { position: fixed; inset: 0; z-index: 5; pointer-events: none; opacity: 0; overflow: hidden; mix-blend-mode: screen; }
+.about-first img {
+  position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; max-width: none; object-fit: cover;
+  translate: -50% -50%;
+  -webkit-mask-image: radial-gradient(ellipse 70% 66% at 50% 50%, #000 35%, transparent 95%);
+  mask-image: radial-gradient(ellipse 70% 66% at 50% 50%, #000 35%, transparent 95%);
+}
+.about-first .work-grain { opacity: .14; }
+/* резкая вспышка в самом начале перехода — тёплый белый, как свечение меню */
+.work-blink {
+  position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background: radial-gradient(ellipse at 50% 45%, rgba(255, 250, 240, 1), rgba(var(--glow), .9) 45%, rgba(150, 142, 115, .75));
+}
+
+
+/* телефон: пункты столбиком в левом верхнем углу */
+@media (max-width: 640px) {
+  :root {
+    --nav-track: .01em;
+    --gutter: 16px;
+    --hold-scale: 1.25;   /* было 1.5 */
+    --hold-work: 1.25;
+    --hold-about: 1.03;
+    --hold-contact: 1.03;   /* плёнка по экрану телефона, с запасом на тряску — чтобы у краёв не было полос */
+  }
+  .work-grain { opacity: .16; }
+  .nav {
+    justify-content: flex-start;
+    padding-top: calc(18px + env(safe-area-inset-top, 0px)); padding-bottom: 18px;
+  }
+  .nav ul { flex-direction: column; gap: 0; }
+  /* пункты крупнее и с запасом по высоте — удобно попадать пальцем (было 12.5px и padding 5px) */
+  .nav a { font-size: 16px; padding: 9px 0; }
+  .nav a::after { bottom: 5px; }
+  .car-track { gap: 10px; }
+  /* фото целиком: вертикальные упираются в высоту, горизонтальные — в ширину экрана */
+  .car-track img { height: auto; width: auto; max-height: 68vh; max-height: 68svh; max-width: 86vw; }
+  .work-thumbs { gap: 8px; }
+  #work { gap: 80px; }
+  /* на телефоне нижнее меню не помещается между подписями — ставим строкой над ними */
+  .nav-foot { bottom: calc(66px + env(safe-area-inset-bottom, 0px)); gap: 18px; }
+  /* кадр перехода в About — развёрнут на 90°: горизонтальное фото целиком встаёт в вертикальный экран */
+  .about-first img { width: 100vh; width: 100svh; height: 100vw; rotate: -90deg; }   /* 90° — «переверни на 180» */
+  .work-project { gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .nav a.lit::after, .nav-foot a.lit::after { animation: none; }
+  .work-grain, .work-overlay .silhouette { animation: none; }
+}

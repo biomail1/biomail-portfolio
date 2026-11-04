@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cut video</title>
+<style>body { background: #111; color: #ddd; font: 13px/1.5 monospace; padding: 16px; } canvas { max-width: 480px; display: block; margin-top: 8px; }</style>
+</head>
+<body>
+<div id="log">ready</div>
+<canvas id="c"></canvas>
+<script>
+  // Вырезает кусок видео без звука: рисует кадры на canvas и записывает его MediaRecorder'ом, потом сохраняет PUT-запросом.
+  // Параметры: ?src=...&from=10&to=16&out=assets/work/vhs.mp4&w=1280&kbps=5000
+  const q = new URLSearchParams(location.search);
+  const SRC = q.get('src') || '/.claude/tmp/source.mp4';
+  const FROM = +(q.get('from') || 10), TO = +(q.get('to') || 16);
+  const OUT = q.get('out') || 'assets/work/vhs.mp4';
+  const MAXW = +(q.get('w') || 1280), KBPS = +(q.get('kbps') || 5000);
+  const log = s => { document.getElementById('log').textContent += '\n' + s; };
+  window.result = null;
+
+  async function cut() {
+    const v = document.createElement('video');
+    v.src = SRC; v.muted = true; v.playsInline = true; v.preload = 'auto';
+    await new Promise((ok, fail) => { v.onloadedmetadata = ok; v.onerror = () => fail(new Error('video load error')); });
+    log(`source ${v.videoWidth}x${v.videoHeight}, ${v.duration.toFixed(2)}s`);
+
+    const scale = Math.min(1, MAXW / v.videoWidth);
+    const W = Math.round(v.videoWidth * scale / 2) * 2, H = Math.round(v.videoHeight * scale / 2) * 2;
+    const c = document.getElementById('c'); c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+
+    v.currentTime = FROM;
+    await new Promise(ok => v.onseeked = ok);
+    ctx.drawImage(v, 0, 0, W, H);
+
+    const types = ['video/mp4;codecs=avc1.640028', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+    const mime = types.find(t => MediaRecorder.isTypeSupported(t));
+    log(`recording as ${mime}, ${W}x${H}, ${KBPS} kbps`);
+    const rec = new MediaRecorder(c.captureStream(30), { mimeType: mime, videoBitsPerSecond: KBPS * 1000 });
+    const chunks = [];
+    rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+    const stopped = new Promise(ok => rec.onstop = ok);
+
+    const draw = () => {
+      ctx.drawImage(v, 0, 0, W, H);
+      if (v.currentTime >= TO) { v.pause(); if (rec.state === 'recording') rec.stop(); return; }
+      v.requestVideoFrameCallback(draw);
+    };
+    rec.start(250);
+    v.requestVideoFrameCallback(draw);
+    await v.play();
+    await stopped;
+
+    const blob = new Blob(chunks, { type: mime.split(';')[0] });
+    const out = mime.startsWith('video/webm') ? OUT.replace(/\.mp4$/, '.webm') : OUT;
+    log(`recorded ${(blob.size / 1024 / 1024).toFixed(2)} MB, saving to ${out}`);
+    const r = await fetch('/' + out, { method: 'PUT', body: blob });
+    log(`saved: HTTP ${r.status}`);
+    window.result = { status: r.status, out, mb: +(blob.size / 1024 / 1024).toFixed(2), w: W, h: H, mime };
+  }
+  cut().catch(e => { log('ERROR ' + e.message); window.result = { error: e.message }; });
+</script>
+</body>
+</html>

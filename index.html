@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05090b">
+<title>Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Inter Tight: 800 — меню; 300/500 — текст About (тот же шрифт, но тоньше — чтобы отличался от вкладок) -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter+Tight:wght@300;500;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="background.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <ul>
+    <li><a href="#home" aria-current="true" data-i18n="home">Home</a></li>
+    <li><a href="#work" data-i18n="work">Work</a></li>
+    <li><a href="#about" data-i18n="about">About</a></li>
+    <li><a href="#contact" data-i18n="contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="lang" role="group" aria-label="Language">
+  <button type="button" data-lang="en" aria-pressed="true">EN</button>
+  <button type="button" data-lang="uk" aria-pressed="false">UA</button>
+</div>
+
+<main>
+  <section class="section" id="home">
+    <!-- в темноте главной мелькают кадры и куски видео из Work (скрипт: «Home: призраки») -->
+    <div class="ghosts" aria-hidden="true"><i></i></div>
+    <span class="section-label" data-i18n="home">Home</span>
+  </section>
+  <section class="section" id="work">
+    <div class="work-overlay" aria-hidden="true">
+      <div class="work-fill"></div>
+      <div class="work-top"><div class="silhouette olive-neg"><img src="assets/work-photo.jpg" alt=""><div class="shade"></div></div></div>
+      <div class="work-grain"></div>
+    </div>
+    <!-- проект: заголовок, видео-«гифка», фото (data-i — номер фото в общем просмотре) -->
+    <article class="work-project">
+      <div class="work-head">
+        <h2 class="work-title">vhs studio</h2>
+        <a class="work-link" href="https://www.instagram.com/tattoo.vhs/" target="_blank" rel="noopener">@tattoo.vhs</a>
+      </div>
+      <video class="work-video" src="assets/work/vhs.mp4" width="1280" height="960" muted loop playsinline autoplay preload="metadata"
+        disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+      <div class="work-thumbs">
+        <button type="button" data-i="0" aria-label="Open photo 1"><img src="assets/work/03.jpg" alt="" loading="lazy"></button>
+        <button type="button" data-i="1" aria-label="Open photo 2"><img src="assets/work/05.jpg" alt="" loading="lazy"></button>
+      </div>
+    </article>
+
+    <article class="work-project">
+      <h2 class="work-title">korzh FFK</h2>
+      <video class="work-video" src="assets/work/korzh.mp4" width="1280" height="720" muted loop playsinline autoplay preload="metadata"
+        disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+      <div class="work-thumbs">
+        <button type="button" data-i="2" class="wide" aria-label="Open photo 3"><img src="assets/work/korzh-1.jpg" alt="" loading="lazy"></button>
+        <button type="button" data-i="3" class="wide" aria-label="Open photo 4"><img src="assets/work/korzh-2.webp" alt="" loading="lazy"></button>
+      </div>
+    </article>
+
+    <article class="work-project tall">
+      <div class="work-head">
+        <h2 class="work-title">clothing</h2>
+        <a class="work-link" href="https://www.instagram.com/okrug.co/" target="_blank" rel="noopener">@okrug.co</a>
+      </div>
+      <div class="work-thumbs">
+        <button type="button" data-i="4" class="wide" aria-label="Open photo 5"><img src="assets/work/okrug-1.jpg" alt="" loading="lazy"></button>
+      </div>
+      <video class="work-video" src="assets/work/okrug-street.mp4" width="1280" height="2276" muted loop playsinline autoplay preload="metadata"
+        disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+    </article>
+
+    <article class="work-project">
+      <h2 class="work-title">amsterdam</h2>
+      <div class="work-thumbs">
+        <button type="button" data-i="5" class="wide" aria-label="Open photo 6"><img src="assets/work/amstr-1.jpg" alt="" loading="lazy"></button>
+      </div>
+      <video class="work-video crop-frame" src="assets/work/amstr.mp4" width="1280" height="720" muted loop playsinline autoplay preload="metadata"
+        disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+    </article>
+    <span class="section-label" data-i18n="work">Work</span>
+  </section>
+  <section class="section" id="about">
+    <!-- фон About: чёткий тёмно-синий негатив; на телефоне — вся плёнка из 3 кадров (без чёрных полей), как прислал пользователь -->
+    <div class="work-overlay about-overlay" aria-hidden="true">
+      <div class="work-top"><div class="silhouette cyan-neg"><picture>
+        <source media="(max-width: 640px)" srcset="assets/about-strip.jpg"><img src="assets/about-photo.jpg" alt="">
+      </picture><div class="shade"></div><i class="strip-line"></i><i class="strip-line"></i></div></div>
+      <div class="work-grain"></div>
+    </div>
+    <!-- текст About: кто, коротко о себе, оборудование. Тексты — в I18N; модели техники не переводятся -->
+    <div class="about-text">
+      <p class="about-line" data-i18n="aboutLine">Video &amp; photo. Ukraine &amp; Europe.</p>
+      <p class="about-bio" data-i18n="aboutBio">I shoot a dark aesthetic with aggressive editing, but adapt easily to any situation and setting. I do it all myself: shooting, editing, colour, sound design.</p>
+      <h2 class="gear-title" data-i18n="gearTitle">Gear</h2>
+      <dl class="gear">
+        <div><dt data-i18n="gearCam">Camera</dt><dd>Sony FX30</dd></div>
+        <div><dt data-i18n="gearLens">Lenses</dt><dd>Viltrox 9mm<br>Tamron 17–70mm</dd></div>
+        <div><dt data-i18n="gearGimbal">Gimbal</dt><dd>DJI RS 3</dd></div>
+        <div><dt data-i18n="gearLight">Light</dt><dd>Amaran Ace 25c</dd></div>
+        <div><dt data-i18n="gearDrone">FPV drone</dt><dd>DJI Avata 2</dd></div>
+      </dl>
+    </div>
+    <span class="section-label" data-i18n="about">About</span>
+  </section>
+  <section class="section" id="contact">
+    <!-- рябь воды — SVG-фильтр искажения (волны «колышут» кадр), вместе с течением.
+         #water-ripple — компьютер (2 слоя волн, плавно); #water-ripple-lite — телефон (1 слой, пересчёт ~8 раз/с, шаги задаёт скрипт) -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <filter id="water-ripple" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.028" numOctaves="2" seed="4" result="noise">
+          <animate attributeName="baseFrequency" dur="16s" values="0.006 0.028; 0.009 0.036; 0.006 0.028" repeatCount="indefinite"/>
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="water-ripple-lite" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.009 0.036" numOctaves="1" seed="4" result="noise">
+          <animate id="ripple-lite-anim" attributeName="baseFrequency" dur="16s" calcMode="discrete" repeatCount="indefinite"
+            values="0.009 0.036; 0.0135 0.045; 0.009 0.036"/>
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="30" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </svg>
+    <!-- фон Contact: вода, серебристый негатив (как About — обычным слоем, с тряской); на компьютере кадр развёрнут горизонтально -->
+    <div class="work-overlay about-overlay contact-overlay" aria-hidden="true">
+      <div class="work-top"><div class="silhouette water-neg"><img src="assets/contact-photo.jpg" alt=""><img class="flow" src="assets/contact-photo.jpg" alt=""><div class="shade"></div></div></div>
+      <div class="lightning"></div>
+      <div class="work-grain"></div>
+    </div>
+    <!-- контакты — по центру, в том же стиле, что оборудование в About (подпись слева от оси, ссылка справа) -->
+    <div class="about-text contact-text">
+      <dl class="gear">
+        <div><dt data-i18n="cMail">Email</dt><dd><a href="mailto:biomailjj@gmail.com">biomailjj@gmail.com</a></dd></div>
+        <div><dt>Telegram</dt><dd><a href="https://t.me/vanek_bio" target="_blank" rel="noopener">@vanek_bio</a></dd></div>
+        <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/vanya_bilyi/" target="_blank" rel="noopener">@vanya_bilyi</a></dd></div>
+      </dl>
+      <!-- написать письмо: сервера нет — по кнопке открывается почта посетителя с готовым письмом (mailto) -->
+      <form class="contact-form" novalidate>
+        <label><span data-i18n="fName">Name</span><input name="name" type="text" autocomplete="name"></label>
+        <label><span data-i18n="fFrom">Your email or Telegram</span><input name="from" type="text" autocomplete="email"></label>
+        <label><span data-i18n="fMsg">Message</span><textarea name="msg" rows="3"></textarea></label>
+        <button type="submit" data-i18n="fSend">Send</button>
+        <p class="contact-note" data-i18n="fNote">Your mail app will open with the letter ready</p>
+      </form>
+    </div>
+    <span class="section-label" data-i18n="contact">Contact</span>
+  </section>
+</main>
+
+<!-- маленькое меню внизу страницы — те же пункты -->
+<nav class="nav-foot" aria-label="Footer">
+  <a href="#home" data-i18n="home">Home</a>
+  <a href="#work" data-i18n="work">Work</a>
+  <a href="#about" data-i18n="about">About</a>
+  <a href="#contact" data-i18n="contact">Contact</a>
+</nav>
+
+<div class="signature">biomail</div>
+
+<!-- просмотр работ: карусель на весь экран -->
+<div class="viewer" role="dialog" aria-modal="true" aria-label="Work photos">
+  <button type="button" class="viewer-close" data-i18n="close">Close</button>
+  <div class="car-track" tabindex="0">
+    <img src="assets/work/03.jpg" width="1333" height="2000" alt="" draggable="false">
+    <img src="assets/work/05.jpg" width="1500" height="2000" alt="" draggable="false">
+    <img src="assets/work/korzh-1.jpg" width="1179" height="651" alt="" draggable="false">
+    <img src="assets/work/korzh-2.webp" width="2000" height="1132" alt="" draggable="false">
+    <img src="assets/work/okrug-1.jpg" width="1179" height="716" alt="" draggable="false">
+    <img src="assets/work/amstr-1.jpg" width="1820" height="1024" alt="" draggable="false">
+  </div>
+  <div class="car-nav"><button type="button" class="car-prev" aria-label="Previous photo">←</button><button type="button" class="car-next" aria-label="Next photo">→</button></div>
+</div>
+
+<!-- вспышка перехода в Work -->
+<div class="work-flash" aria-hidden="true">
+  <div class="silhouette"><img src="assets/work-photo.jpg" alt=""><div class="shade"></div></div>
+</div>
+<div class="work-flare" aria-hidden="true"></div><div class="work-blink" aria-hidden="true"></div>
+<!-- начало перехода Home → About: цветной кадр вырывается из темноты (на телефоне обрезается по вертикали) -->
+<div class="about-first" aria-hidden="true"><img src="assets/about-photo.jpg" alt=""><div class="work-grain"></div></div><script src="background.js"></script>
+<script>
+  // зерно поверх силуэта Work — тот же тайл, что сгенерировал фон
+  document.querySelectorAll('.work-grain').forEach(g => { g.style.backgroundImage = document.querySelector('.bg-grain').style.backgroundImage; });
+  // то же зерно — на фото проектов (styles.css: .work-thumbs button::after)
+  document.documentElement.style.setProperty('--grain', document.querySelector('.bg-grain').style.backgroundImage);
+
+  // два языка: английский и украинский. Выбор запоминается; без выбора — по языку браузера
+  const I18N = {
+    en: { home: 'Home', work: 'Work', about: 'About', contact: 'Contact', close: 'Close',
+          open: 'Open photo', prev: 'Previous photo', next: 'Next photo', photos: 'Work photos', lang: 'Language',
+          aboutLine: 'Video & photo. Ukraine & Europe.',
+          aboutBio: 'I shoot a dark aesthetic with aggressive editing, but adapt easily to any situation and setting. I do it all myself: shooting, editing, colour, sound design.',
+          cMail: 'Email',
+          fName: 'Name', fFrom: 'Your email or Telegram', fMsg: 'Message', fSend: 'Send →',
+          fNote: 'Your mail app will open with the letter ready', fEmpty: 'Write a message first',
+          fCopied: 'If your mail didn’t open — the text is copied, paste it into a letter to biomailjj@gmail.com',
+          fFallback: 'If your mail didn’t open — write to biomailjj@gmail.com',
+          gearTitle: 'Gear', gearCam: 'Camera', gearLens: 'Lenses', gearGimbal: 'Gimbal', gearLight: 'Light', gearDrone: 'FPV drone' },
+    uk: { home: 'Головна', work: 'Роботи', about: 'Про мене', contact: 'Контакти', close: 'Закрити',
+          open: 'Відкрити фото', prev: 'Попереднє фото', next: 'Наступне фото', photos: 'Фото робіт', lang: 'Мова',
+          aboutLine: 'Відео та фото. Україна та Європа.',
+          aboutBio: 'Знімаю темну естетику з агресивним монтажем, але легко підлаштовуюсь під будь-яку ситуацію і середовище. Роблю все сам: зйомка, монтаж, колор, саунд-дизайн.',
+          cMail: 'Email',
+          fName: 'Імʼя', fFrom: 'Ваш email або Telegram', fMsg: 'Повідомлення', fSend: 'Надіслати →',
+          fNote: 'Відкриється ваша пошта з готовим листом', fEmpty: 'Спершу напишіть повідомлення',
+          fCopied: 'Якщо пошта не відкрилась — текст скопійовано, вставте його в лист на biomailjj@gmail.com',
+          fFallback: 'Якщо пошта не відкрилась — напишіть на biomailjj@gmail.com',
+          gearTitle: 'Обладнання', gearCam: 'Камера', gearLens: 'Обʼєктиви', gearGimbal: 'Стабілізатор', gearLight: 'Світло', gearDrone: 'FPV-дрон' },
+  };
+  function setLang(lang) {
+    const t = I18N[lang] || I18N.en;
+    document.documentElement.lang = lang === 'uk' ? 'uk' : 'en';
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t[el.dataset.i18n]; });
+    document.querySelectorAll('.work-thumbs button').forEach((b, i) => b.setAttribute('aria-label', `${t.open} ${i + 1}`));
+    document.querySelector('.car-prev').setAttribute('aria-label', t.prev);
+    document.querySelector('.car-next').setAttribute('aria-label', t.next);
+    document.querySelector('.viewer').setAttribute('aria-label', t.photos);
+    document.querySelector('.lang').setAttribute('aria-label', t.lang);
+    document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang));
+    try { localStorage.setItem('lang', lang); } catch (e) {}
+  }
+  let savedLang = null;
+  try { savedLang = localStorage.getItem('lang'); } catch (e) {}
+  const browserUk = (navigator.language || '').toLowerCase().startsWith('uk');
+  setLang(I18N[savedLang] ? savedLang : (browserUk ? 'uk' : 'en'));
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+</script>
+<script>
+  // разделы — как вкладки: на странице всегда один, переключается только кнопками меню (сверху и внизу)
+  const links = [...document.querySelectorAll('.nav a, .nav-foot a')];
+  const sections = [...document.querySelectorAll('.section')];
+  let current = null;
+  function show(id, push) {
+    if (!sections.some(s => s.id === id)) id = 'home';
+    current = id;
+    sections.forEach(s => { s.hidden = s.id !== id; });
+    document.querySelector('.nav-foot').hidden = id !== 'work';   // нижнее меню — только в длинном Work
+    links.forEach(a => a.hash === '#' + id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    try { push ? history.pushState(null, '', '#' + id) : history.replaceState(null, '', '#' + id); } catch (e) {}
+  }
+  show(location.hash.slice(1));
+  addEventListener('popstate', () => show(location.hash.slice(1)));   // кнопка «назад» браузера
+
+  // «зажигание» пункта: мышь — при наведении, телефон — на время касания (чтобы свечение не «залипало»), клавиатура — при фокусе
+  links.forEach(a => {
+    const on = () => a.classList.add('lit'), off = () => a.classList.remove('lit');
+    a.addEventListener('pointerenter', e => e.pointerType === 'mouse' && on());
+    a.addEventListener('pointerleave', e => e.pointerType === 'mouse' && off());
+    a.addEventListener('pointerdown', e => e.pointerType !== 'mouse' && on());
+    a.addEventListener('pointerup', e => e.pointerType !== 'mouse' && setTimeout(off, 800));
+    a.addEventListener('pointercancel', off);
+    a.addEventListener('focus', () => a.matches(':focus-visible') && on());
+    a.addEventListener('blur', off);
+  });
+
+  // переход в Work: серая тень — оливковый негатив рывком вырывается через экран — и встаёт оверлеем раздела.
+  // В момент рывка страница мгновенно переезжает к Work; последний кадр вспышки совпадает с оверлеем раздела.
+  const flash = document.querySelector('.work-flash');
+  const flashSil = flash.querySelector('.silhouette');
+  const flashImg = flash.querySelector('img');
+  const flare = document.querySelector('.work-flare');
+  const blink = document.querySelector('.work-blink');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SHADOW = 'grayscale(1) contrast(3) brightness(.55) blur(6px)';
+  // первый кадр перехода в Work — мягче и размытее, чтобы вписывался в фон сайта (06.11)
+  const SHADOW_SOFT = 'grayscale(1) contrast(2.2) brightness(.5) blur(12px)';
+  const OLIVE_NEG = 'invert(1) grayscale(1) sepia(.85) hue-rotate(22deg) saturate(.9) contrast(1.7) brightness(.45) blur(8px)';
+  const DURATION = 400;   // 364 — проскакивал незаметно, 560 — слишком долго
+  const BLINK = 72;   // резкая вспышка в начале (3 кадра по 24 мс); остальной переход стартует сразу после неё
+  const page = document.querySelector('main');
+  const hard = frames => frames.map(f => ({ easing: 'steps(1, end)', ...f }));   // резкие кадры, без плавности
+
+  // переход одинаковый для всех разделов с фото; у раздела своё фото (на телефоне может быть другое) и цвет негатива.
+  // Последний кадр совпадает с оверлеем раздела: то же фото, тот же негатив, масштаб --hold-<раздел>
+  // синий цвет даёт слой-тонировка .shade (multiply) — у кадров перехода в About он тот же, что у фона раздела
+  const CYAN_NEG = 'invert(1) grayscale(1) contrast(1.9) brightness(.5)';
+  const WATER_NEG = 'invert(1) grayscale(1) contrast(1.7) brightness(.8)';   // Contact: серебристый негатив воды (как .water-neg)
+  const phone = matchMedia('(max-width: 640px)');
+  const SHOTS = {
+    work: { src: () => 'assets/work-photo.jpg', neg: OLIVE_NEG },
+    // photoOnly: акцент только на фото — без вспышки, засвета и рывка страницы (красный film burn — отвергнут)
+    about: { src: () => phone.matches ? 'assets/about-strip.jpg' : 'assets/about-photo.jpg', neg: CYAN_NEG, photoOnly: true },
+    contact: { src: () => 'assets/contact-photo.jpg', neg: WATER_NEG, photoOnly: true },
+  };
+
+  const first = document.querySelector('.about-first'), firstImg = first.querySelector('img');
+  const FIRST = 180;   // цветной кадр в начале перехода Home → About, мс
+  let burstToken = 0;
+  function playBurst(id) {
+    [flash, flashSil, flashImg, flare, blink, page, first, firstImg].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+    const shot = SHOTS[id];
+    // с главной в About — сначала цветной кадр резко вырывается из темноты, потом уже тень и негатив
+    const fromDark = id === 'about' && current === 'home';
+    flashImg.src = shot.src();
+    flash.dataset.shot = id;
+    // начало: в Work — три резких кадра засвета (перебой плёнки); в About (photoOnly) — сразу кадры фото
+    const lead = fromDark ? FIRST : shot.photoOnly ? 0 : BLINK;
+    if (!shot.photoOnly) {
+      blink.animate(hard([{ opacity: .95 }, { opacity: .1, offset: .33 }, { opacity: .7, offset: .66 }, { opacity: 0 }]), { duration: BLINK });
+    }
+    // сама страница дёргается, как кадр, соскочивший в проекторе: рывок вверх на вспышке и тряска на рывке силуэта
+    page.animate(hard([
+      { translate: '0 0' }, { translate: shot.photoOnly ? '0 0' : '0 -18px', offset: .06 }, { translate: '0 0', offset: .2 },
+      { translate: '-10px 6px', offset: .38 }, { translate: '12px -8px', offset: .48 }, { translate: '0 0', offset: .56 }, { translate: '0 0' },
+    ]), { duration: DURATION + lead });
+    // при fromDark основной переход стартует чуть раньше конца цветного кадра — его первый (тёмный) кусок
+    // совпадает с хвостом цветного кадра, и пауза в темноте перед негативом короткая
+    const t = { duration: DURATION, delay: fromDark ? lead - DURATION * .2 : lead };
+    // финальный масштаб — как у оверлея раздела (свой на компьютере и телефоне);
+    // рывок — резко до 2.3×, как в выбранном демо, и уже потом силуэт встаёт оверлеем
+    const hold = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hold-' + id)) || 1.5;
+    const burst = Math.max(2.3, hold * 1.53);
+    const run = flash.animate(hard([
+      // при fromDark первый кадр (серая тень) заменяет цветное фото — тень не показываем
+      { opacity: 0 }, { opacity: fromDark ? 0 : id === 'work' ? .8 : .95, offset: .06 }, { opacity: 0, offset: .2 },
+      { opacity: .85, offset: .38 }, { opacity: .7, offset: .48 }, { opacity: 0, offset: .58 }, { opacity: 0 },
+    ]), t);
+    if (fromDark) {
+      // цветной кадр (до основного перехода, FIRST мс): из темноты тусклый, рывком ярче и ближе, обрыв в темноту
+      const f = { duration: FIRST + DURATION * .12 };
+      first.animate(hard([{ opacity: 1 }, { opacity: 0, offset: .75 }, { opacity: 0 }]), f);
+      // приглушённый цвет и лёгкое размытие — кадр вписан в фон, а не лежит поверх
+      firstImg.animate(hard([
+        // ...а перед обрывом — резкий скачок по масштабу (кадр «влетает» в зрителя)
+        { filter: 'saturate(.55) brightness(.3) contrast(1.3) blur(4px)', transform: 'scale(1)' },
+        { filter: 'saturate(.6) brightness(.55) contrast(1.25) blur(3px)', transform: 'scale(1.03)', offset: .2 },
+        { filter: 'saturate(.7) brightness(.8) contrast(1.15) blur(1.5px)', transform: 'scale(1.06)', offset: .38 },
+        { filter: 'saturate(.7) brightness(.85) contrast(1.15) blur(2px)', transform: 'scale(1.75)', offset: .58 },
+        { filter: 'saturate(.7) brightness(.85) contrast(1.15) blur(2px)', transform: 'scale(1.75)' },
+      ]), f);
+    }
+    flashSil.animate(hard([
+      // translate — дрожание кадра: силуэт на каждом кадре чуть смещён
+      { transform: 'scale(1)', translate: '0 0' }, { transform: 'scale(1)', translate: '6px -4px', offset: .12 },
+      { transform: 'scale(1)', translate: '0 0', offset: .2 },
+      { transform: `scale(${Math.max(1.5, hold)})`, translate: '-8px 5px', offset: .38 },
+      { transform: `scale(${burst})`, translate: '10px -6px', offset: .48 }, { transform: `scale(${hold})`, translate: '0 0' },
+    ]), t);
+    const shadow = id === 'work' ? SHADOW_SOFT : SHADOW;
+    flashImg.animate(hard([{ filter: shadow }, { filter: shadow, offset: .2 }, { filter: shot.neg, offset: .38 }, { filter: shot.neg }]), t);
+    if (id === 'work') {
+      // первый кадр Work: края силуэта растворяются в фоне Home — мягкая маска только на этот кадр, потом обычная
+      const soft = 'radial-gradient(ellipse 50% 42% at 50% 46%, #000 0%, rgba(0, 0, 0, .55) 45%, transparent 90%)';
+      const base = getComputedStyle(flashImg).maskImage || getComputedStyle(flashImg).webkitMaskImage;
+      flashImg.animate(hard([
+        { maskImage: soft, webkitMaskImage: soft }, { maskImage: soft, webkitMaskImage: soft, offset: .2 },
+        { maskImage: base, webkitMaskImage: base, offset: .38 }, { maskImage: base, webkitMaskImage: base },
+      ]), t);
+    }
+    if (!shot.photoOnly) flare.animate(hard([
+      { opacity: 0 }, { opacity: .5, offset: .06 }, { opacity: 0, offset: .2 }, { opacity: .3, offset: .38 }, { opacity: 0, offset: .56 }, { opacity: 0 },
+    ]), t);
+    // на последнем кадре рывка — мгновенно открываем раздел. Отсчёт — от фактического старта анимации (ready):
+    // если браузер занят, анимация стартует позже нажатия, и раздел не должен открыться раньше кадров
+    // запасной вариант — если ready не пришёл за 150 мс; номер перехода — чтобы быстрое второе нажатие не открыло старый раздел
+    const token = ++burstToken;
+    let started = false;
+    const go = () => {
+      if (started) return;
+      started = true;
+      // сразу после вспышки текущий раздел гаснет — переход всегда идёт по тёмному фону, как с Home
+      // (поверх светлого оверлея Work кадры «экраном» сливались в кашу)
+      setTimeout(() => { if (token === burstToken) sections.forEach(s => { s.hidden = true; }); }, lead * .6);
+      setTimeout(() => { if (token === burstToken) show(id, true); }, t.delay + DURATION * .56);
+    };
+    run.ready.then(go).catch(() => {});
+    setTimeout(go, 150);
+  }
+
+  // карусель Work: текущее фото — то, что ближе к центру; листается пальцем, трекпадом, перетаскиванием мышью, стрелками
+  const track = document.querySelector('.car-track');
+  const slides = [...track.querySelectorAll('img')];
+  const prevBtn = document.querySelector('.car-prev'), nextBtn = document.querySelector('.car-next');
+  let active = 0;
+  function markActive() {
+    const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
+    let best = 0, dist = Infinity;
+    slides.forEach((s, i) => {
+      const r = s.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid);
+      if (d < dist) { dist = d; best = i; }
+    });
+    active = best;
+    slides.forEach((s, i) => s.classList.toggle('is-active', i === best));
+    prevBtn.disabled = best === 0;
+    nextBtn.disabled = best === slides.length - 1;
+  }
+  function goTo(i) {
+    const s = slides[Math.max(0, Math.min(slides.length - 1, i))];
+    track.scrollTo({ left: s.offsetLeft - (track.clientWidth - s.offsetWidth) / 2 });
+  }
+  let ticking = false;
+  track.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { markActive(); ticking = false; }); } });
+  prevBtn.addEventListener('click', () => goTo(active - 1));
+  nextBtn.addEventListener('click', () => goTo(active + 1));
+  track.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(active + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(active - 1); }
+  });
+  // перетаскивание мышью (палец и трекпад листают сами)
+  track.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    const x0 = e.clientX, s0 = track.scrollLeft;
+    let moved = false;
+    track.setPointerCapture(e.pointerId);
+    const move = ev => {
+      if (!moved && Math.abs(ev.clientX - x0) > 4) { moved = true; track.classList.add('dragging'); }
+      if (moved) track.scrollLeft = s0 - (ev.clientX - x0);
+    };
+    const up = () => {
+      track.removeEventListener('pointermove', move); track.removeEventListener('pointerup', up);
+      if (!moved) return;
+      track._dragged = true;   // отпускание после перетаскивания — не клик (не закрываем просмотр)
+      track.classList.remove('dragging');
+      markActive(); goTo(active);   // доводим до ближайшего фото
+    };
+    track.addEventListener('pointermove', move); track.addEventListener('pointerup', up);
+  });
+  addEventListener('resize', () => goTo(active));
+
+  // видео-«гифка» играет, только пока видно на экране
+  const videoIO = new IntersectionObserver(entries => entries.forEach(e => {
+    e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause();
+  }));
+  document.querySelectorAll('.work-video').forEach(v => {
+    v.muted = true;   // для iOS: без звука автозапуск разрешён
+    videoIO.observe(v);
+  });
+
+  const rnd = (a, b) => a + Math.random() * (b - a);
+
+  // About: в случайные моменты фон на мгновение становится оригинальным фото (не негативом) —
+  // раз в 2.5–7 с, на 0.1–0.45 с, иногда двойным миганием; только пока About открыт и вкладка видна
+  const aboutSil = document.querySelector('.about-overlay .silhouette');
+  function flickerRaw() {
+    setTimeout(() => {
+      if (current === 'about' && !document.hidden) {
+        let at = 0;
+        for (let i = 0, n = Math.random() < .35 ? 2 : 1; i < n; i++) {
+          const on = rnd(100, 450);
+          setTimeout(() => aboutSil.classList.add('raw'), at);
+          setTimeout(() => aboutSil.classList.remove('raw'), at + on);
+          at += on + rnd(60, 160);
+        }
+      }
+      flickerRaw();
+    }, rnd(2500, 7000));
+  }
+  if (!reduced) flickerRaw();
+
+  // Home: «призраки» — в случайных местах тёмной главной проявляются с перебоями (как лампа) кадры и куски видео
+  // из Work, держатся пару секунд и гаснут. Не больше 2 сразу (на телефоне 1), случайный порядок без повторов подряд.
+  // Видео — с случайной секунды. Только пока открыт Home и вкладка видна.
+  const ghostLayer = document.querySelector('.ghosts');
+  const GHOSTS = [
+    { v: 'assets/work/vhs.mp4', r: 4 / 3 }, { v: 'assets/work/korzh.mp4', r: 16 / 9 },
+    { v: 'assets/work/okrug-street.mp4', r: 9 / 16 }, { v: 'assets/work/amstr.mp4', r: 16 / 9 },
+  ];   // только куски видео (фото пользователь попросил убрать)
+  let ghostsAlive = 0, ghostBag = [];
+  function nextGhost() {   // «мешок»: все материалы по разу в случайном порядке, потом новый круг
+    if (!ghostBag.length) ghostBag = GHOSTS.map((g, i) => i).sort(() => Math.random() - .5);
+    return GHOSTS[ghostBag.pop()];
+  }
+  const ghostVideos = {};
+  function ghostVideo(src) {
+    if (!ghostVideos[src]) {
+      const v = document.createElement('video');
+      Object.assign(v, { muted: true, loop: true, playsInline: true, preload: 'auto' });
+      v.setAttribute('playsinline', '');
+      v.src = src;
+      ghostVideos[src] = v;
+    }
+    return ghostVideos[src];
+  }
+  function spawnGhost() {
+    if (current !== 'home' || document.hidden || ghostsAlive >= 1) return;
+    const m = nextGhost();
+    // место одно (пометил пользователь): во всю ширину, от ~37% высоты экрана до низа; размер и место — в CSS (.ghost)
+    const g = document.createElement('div');
+    g.className = 'ghost';
+    // видео не создаём каждый раз заново — берём уже загруженное (быстрее появляется, меньше трафика)
+    const media = ghostVideo(m.v);
+    g.appendChild(media);
+    ghostLayer.insertBefore(g, ghostLayer.lastElementChild);
+    ghostsAlive++;
+    const ready = new Promise(ok => {
+      const seek = () => {
+        media.addEventListener('seeked', ok, { once: true });
+        media.currentTime = rnd(0, Math.max(0, media.duration - 3));
+      };
+      media.readyState >= 1 ? seek() : media.addEventListener('loadedmetadata', seek, { once: true });
+      media.addEventListener('error', ok, { once: true });
+    }).then(() => media.play().catch(() => {}));
+    const peak = rnd(.6, 1), hold = rnd(1000, 2600);
+    // выравниваем яркость: светлые сцены прозрачнее, тёмные — плотнее, чтобы ни одна не выбивалась из фона.
+    // Меряем кадр 4 раза в секунду (в видео бывают склейки со светлого на тёмное)
+    const probe = document.createElement('canvas'); probe.width = 16; probe.height = 9;
+    const pc = probe.getContext('2d', { willReadFrequently: true });
+    const level = () => {
+      try {
+        pc.drawImage(media, 0, 0, 16, 9);
+        const d = pc.getImageData(0, 0, 16, 9).data; let s = 0;
+        for (let i = 0; i < d.length; i += 4) s += d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11;
+        const lum = Math.max(1, s / (d.length / 4));
+        media.style.opacity = Math.min(.42, Math.max(.05, 20 / lum - (lum > 110 ? .03 : 0))).toFixed(3);
+      } catch (e) {}
+    };
+    let probeTimer;
+    const done = () => {
+      clearInterval(probeTimer);
+      media.pause(); g.remove(); ghostsAlive--;
+      scheduleGhost();
+    };
+    Promise.race([ready, new Promise(ok => setTimeout(ok, 2500))]).then(() => { level(); probeTimer = setInterval(level, 250); }).then(() =>
+      g.animate(hard([
+        { opacity: 0 }, { opacity: peak * .7, offset: .1 }, { opacity: peak * .15, offset: .2 }, { opacity: peak, offset: .32 },
+        { opacity: peak * .5, offset: .5 }, { opacity: peak, offset: .62 }, { opacity: peak },
+      ]), { duration: 520, fill: 'forwards' }).finished
+    ).then(() => new Promise(ok => setTimeout(ok, hold))).then(() =>
+      g.animate(hard([{ opacity: peak }, { opacity: peak * .3, offset: .3 }, { opacity: peak * .8, offset: .5 }, { opacity: 0, offset: .7 }, { opacity: 0 }]),
+        { duration: 380, fill: 'forwards' }).finished
+    ).then(done, done);
+  }
+  // паузы неровные: основной фон остаётся основным, но зашедший на сайт успевает увидеть — первый кадр через 1–2.5 с,
+  // дальше обычно 2.5–7 с, иногда (20%) почти сразу
+  function scheduleGhost(first) {
+    const wait = first ? rnd(500, 1200) : Math.random() < .25 ? rnd(150, 400) : rnd(400, 1600);   // 2.5–7 с — «долго ждать»
+    setTimeout(() => { spawnGhost(); if (!ghostsAlive) scheduleGhost(); }, wait);
+  }
+  if (!reduced) scheduleGhost(true);
+
+  // Contact: «написать письмо» — сервера нет, поэтому собираем письмо и открываем почту посетителя (mailto)
+  const contactForm = document.querySelector('.contact-form');
+  contactForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const f = contactForm.elements, t = I18N[document.documentElement.lang === 'uk' ? 'uk' : 'en'];
+    const note = contactForm.querySelector('.contact-note');
+    const msg = f.msg.value.trim();
+    if (!msg) { note.textContent = t.fEmpty; note.classList.add('warn'); f.msg.focus(); return; }
+    note.textContent = t.fNote; note.classList.remove('warn');
+    const name = f.name.value.trim(), from = f.from.value.trim();
+    const subject = 'biomail — ' + (name || 'site');
+    const body = msg + '\n\n— ' + [name, from].filter(Boolean).join(', ');
+    const url = 'mailto:biomailjj@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    // обычная ссылка в новом окне — так её пропускают и встроенные рамки (страница для телефона внутри claude.ai),
+    // и телефоны; location.href = mailto там часто блокируется
+    const a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    document.body.appendChild(a); a.click(); a.remove();
+    // запасной вариант: если почта не открылась — текст уже скопирован, подсказка куда вставить
+    try { navigator.clipboard.writeText(body).then(() => { note.textContent = t.fCopied; }).catch(() => { note.textContent = t.fFallback; }); }
+    catch (err) { note.textContent = t.fFallback; }
+  });
+
+  // Work: силуэт «подглядывает» сквозь просветы — он закреплён в экране за материалами, и при прокрутке плавно
+  // (с запаздыванием) подтягивается так, чтобы глаза были в ближайшем к центру просвете между видео и фото.
+  // На первом экране стоит на месте — как последний кадр перехода
+  const workTop = document.querySelector('#work .work-top');
+  const workMedia = [...document.querySelectorAll('#work .work-video, #work .work-thumbs button')];
+  const PHOTO = { w: 1500, h: 2000, posY: .30, eyes: .49 };   // work-photo.jpg: object-position 50% 30%, глаза на 49% высоты
+  let eyeBase = 0, eyeDy = 0, eyeRaf = 0;
+  const workSilImg = workTop.querySelector('img');
+  function measureEyes() {
+    // где глаза на экране без сдвига: рамка фото (на телефоне — весь экран, на компьютере — по высоте экрана),
+    // в ней object-fit: cover, плюс масштаб силуэта вокруг 50% 45%
+    const H = workTop.offsetHeight, iw = workSilImg.offsetWidth, ih = workSilImg.offsetHeight;
+    const k = Math.max(iw / PHOTO.w, ih / PHOTO.h), dh = PHOTO.h * k;
+    const local = workSilImg.offsetTop + (ih - dh) * PHOTO.posY + PHOTO.eyes * dh;
+    const s = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hold-scale')) || 1;
+    eyeBase = H * .45 + (local - H * .45) * s;
+  }
+  function findGap() {
+    // просветы по вертикали между материалами в пределах экрана; выбираем ближний к центру, широкие — чуть охотнее
+    const ih = innerHeight, spans = [];
+    workMedia.forEach(m => { const r = m.getBoundingClientRect(); if (r.bottom > 0 && r.top < ih) spans.push([r.top, r.bottom]); });
+    spans.sort((a, b) => a[0] - b[0]);
+    const merged = [];
+    spans.forEach(s => { const l = merged[merged.length - 1]; if (l && s[0] <= l[1] + 1) l[1] = Math.max(l[1], s[1]); else merged.push([...s]); });
+    let y = 0, best = null, bestScore = Infinity;
+    const consider = (a, b) => {
+      if (b - a < 10) return;
+      const c = (a + b) / 2, score = Math.abs(c - ih * .45) - Math.min(b - a, 200) * .5;
+      if (score < bestScore) { bestScore = score; best = c; }
+    };
+    merged.forEach(([a, b]) => { consider(y, a); y = Math.max(y, b); });
+    consider(y, ih);
+    return best;
+  }
+  function eyesTick() {
+    eyeRaf = 0;
+    if (current !== 'work') { eyeDy = 0; workTop.style.transform = workTop.style.filter = ''; return; }
+    const ih = innerHeight, gap = findGap();
+    const w = Math.min(1, scrollY / (ih * .4));   // первый экран — на месте, дальше — к просветам
+    let target = gap == null ? eyeDy : (gap - eyeBase) * w;
+    target = Math.max(ih * .12 - eyeBase, Math.min(ih * .62 - eyeBase, target));   // глаза не уходят за края экрана
+    eyeDy += (target - eyeDy) * .12;
+    workTop.style.transform = `translateY(${eyeDy.toFixed(1)}px)`;
+    // за первым экраном силуэт чуть ярче (иначе на светлом продолжении фона в просветах его не видно — но без
+    // сильного контраста), а верхний край растворяется (--top-fade), чтобы сдвинутый слой не давал резкой линии
+    workTop.style.filter = w > 0 ? `brightness(${(1 + w * .4).toFixed(2)}) contrast(${(1 + w * .15).toFixed(2)})` : '';
+    workTop.style.setProperty('--top-fade', w.toFixed(3));
+    if (Math.abs(target - eyeDy) > .5) eyeRaf = requestAnimationFrame(eyesTick);
+  }
+  const kickEyes = () => { if (!eyeRaf) eyeRaf = requestAnimationFrame(eyesTick); };
+  if (!reduced) {
+    new ResizeObserver(() => { measureEyes(); kickEyes(); }).observe(workTop);
+    addEventListener('scroll', kickEyes, { passive: true });
+  }
+
+  // Contact: в случайные моменты на воду падают отсветы молнии — 2–3 неровных мигания: вода высвечивается,
+  // сверху — холодный отсвет в случайном месте; раз в 4–11 с, только пока Contact открыт и вкладка видна
+  const lightning = document.querySelector('.lightning');
+  const waterSil = document.querySelector('.contact-overlay .work-top');   // не .silhouette — на нём фильтр ряби
+  function strike() {
+    setTimeout(() => {
+      if (current === 'contact' && !document.hidden) {
+        const k = rnd(.55, 1);   // сила вспышки
+        lightning.style.setProperty('--lx', rnd(15, 85) + '%');
+        const frames = Math.random() < .5
+          ? [0, .9, .15, .7, 0, .35, 0]          // ярко — провал — ещё раз — тихий отголосок
+          : [0, .6, .1, 1, .2, 0, .25, 0];
+        const at = [0, .06, .14, .22, .34, .5, .62, 1].slice(0, frames.length - 1).concat(1);
+        const duration = rnd(600, 950);
+        lightning.animate(hard(frames.map((o, i) => ({ opacity: o * k, offset: at[i] }))), { duration });
+        waterSil.animate(hard(frames.map((o, i) => ({ filter: `brightness(${1 + o * k * .9})`, offset: at[i] }))), { duration });
+      }
+      strike();
+    }, rnd(4000, 11000));
+  }
+  if (!reduced) strike();
+
+  // рябь для телефона: волны меняются шагами ~8 раз в секунду (calcMode discrete) — фильтр пересчитывается
+  // только на шаге, а не на каждом кадре; шаги — плавная волна от и до, как у плавной ряби на компьютере
+  (() => {
+    const anim = document.getElementById('ripple-lite-anim');
+    const STEPS = 128;   // 16 с / 128 ≈ 8 раз в секунду
+    const vals = [];
+    for (let i = 0; i <= STEPS; i++) {
+      const k = (1 - Math.cos(i / STEPS * Math.PI * 2)) / 2;   // 0 → 1 → 0
+      vals.push(`${(0.009 + 0.0045 * k).toFixed(5)} ${(0.036 + 0.009 * k).toFixed(5)}`);
+    }
+    anim.setAttribute('values', vals.join('; '));
+  })();
+
+  // телефон: чёрные тонкие полосы на стыках кадров плёнки. Лежат в том же слое, что и фото (трясётся и масштабируется
+  // вместе с ним), поэтому не съезжают. Место стыка считаем как object-fit: cover: фото вписано по высоте или по ширине
+  const STRIP = { ratio: 923 / 1632, joins: [542 / 1632, 1089 / 1632] };   // стыки кадров в about-strip.jpg
+  const stripLines = [...aboutSil.querySelectorAll('.strip-line')];
+  function placeStripLines() {
+    const w = aboutSil.offsetWidth, h = aboutSil.offsetHeight;
+    if (!w || !h) return;
+    const imgH = w / h < STRIP.ratio ? h : w / STRIP.ratio;
+    const top = (h - imgH) / 2;
+    stripLines.forEach((l, i) => { l.style.top = (top + imgH * STRIP.joins[i]) + 'px'; });
+  }
+  new ResizeObserver(placeStripLines).observe(aboutSil);   // в том числе когда About открывается (размер был 0)
+
+  // превью → открыть просмотр на выбранном фото; закрыть — Close, Esc или клик по пустому месту
+  const viewer = document.querySelector('.viewer');
+  let opener = null;
+  function openViewer(i) {
+    viewer.classList.add('open');
+    document.documentElement.style.overflow = 'hidden';
+    track.style.scrollBehavior = 'auto'; goTo(i); track.style.scrollBehavior = '';
+    markActive();
+    track.focus({ preventScroll: true });
+  }
+  function closeViewer() {
+    viewer.classList.remove('open');
+    document.documentElement.style.overflow = '';
+    if (opener) opener.focus({ preventScroll: true });
+  }
+  document.querySelectorAll('.work-thumbs button').forEach(b => b.addEventListener('click', () => { opener = b; openViewer(+b.dataset.i); }));
+  viewer.querySelector('.viewer-close').addEventListener('click', closeViewer);
+  viewer.addEventListener('click', e => {
+    if (track._dragged) { track._dragged = false; return; }
+    if (e.target === viewer || e.target === track) closeViewer();
+  });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && viewer.classList.contains('open')) closeViewer(); });
+
+  // нажатие на пункт: открыть его раздел (в Work — через вспышку); на уже открытом — просто наверх
+  links.forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    const id = a.hash.slice(1);
+    burstToken++;   // любое новое нажатие отменяет переход, который ещё не дошёл до рывка
+    if (id === current) {
+      // нажатие на открытый раздел: если переход успел погасить разделы — вернуть этот раздел, иначе плавно наверх
+      if (sections.every(s => s.hidden)) show(id); else window.scrollTo({ top: 0 });
+      return;
+    }
+    if (SHOTS[id] && !reduced) playBurst(id);
+    else show(id, true);
+  }));
+</script>
+</body>
+</html>
