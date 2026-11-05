@@ -393,8 +393,8 @@ body { position: relative; }
 /* вода «течёт»: две копии кадра медленно плывут в одну сторону (ОТ зрителя — от камня внизу вглубь кадра)
    и по очереди проявляются и гаснут со сдвигом в полцикла — движение без остановок и без видимого шва.
    transform — в собственных осях кадра, поэтому на компьютере (кадр развёрнут) течёт так же */
-.contact-overlay .silhouette img { animation: water-flow 14s linear infinite; }
-.contact-overlay .silhouette img.flow { animation-delay: -7s; }
+.contact-overlay .silhouette img { animation: water-flow 19s linear infinite; }   /* 07.11 «чуть медленнее» — было 14 с */
+.contact-overlay .silhouette img.flow { animation-delay: -9.5s; }
 @keyframes water-flow {
   0% { transform: scale(1.22) translateY(7%); opacity: 0; }
   25%, 75% { opacity: 1; }
@@ -402,8 +402,8 @@ body { position: relative; }
 }
 /* телефон: течение заметнее — быстрее и с большим ходом */
 @media (max-width: 640px) {
-  .contact-overlay .silhouette img { animation: water-flow-m 12s linear infinite; }   /* 8 с — «слишком быстро» */
-  .contact-overlay .silhouette img.flow { animation-delay: -6s; }
+  .contact-overlay .silhouette img { animation: water-flow-m 16s linear infinite; }   /* 8 с — «слишком быстро», 12 с — 07.11 «чуть медленнее» */
+  .contact-overlay .silhouette img.flow { animation-delay: -8s; }
 }
 @keyframes water-flow-m {
   0% { transform: scale(1.32) translateY(12%); opacity: 0; }
