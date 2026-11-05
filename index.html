@@ -240,6 +240,7 @@
     if (!sections.some(s => s.id === id)) id = 'home';
     current = id;
     sections.forEach(s => { s.hidden = s.id !== id; });
+    if (id === 'home') document.querySelector('.ghosts').style.visibility = '';   // «призраки» снова видны
     document.querySelector('.nav-foot').hidden = id !== 'work';   // нижнее меню — только в длинном Work
     links.forEach(a => a.hash === '#' + id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -293,12 +294,20 @@
   const first = document.querySelector('.about-first'), firstImg = first.querySelector('img');
   const FIRST = 180;   // цветной кадр в начале перехода Home → About, мс
   let burstToken = 0;
+  // фото переходов готовим заранее (иначе на телефоне первые кадры перехода уходили на распаковку фото)
+  const warmShots = Object.values(SHOTS).map(s => { const im = new Image(); im.src = s.src(); im.decode().catch(() => {}); return im; });
   function playBurst(id) {
     [flash, flashSil, flashImg, flare, blink, page, first, firstImg].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+    // видео-«призраки» Home сразу гасим и ставим на паузу — телефону не тянуть их вместе с короткими резкими
+    // кадрами перехода (иначе он пропускает кадры и переход в Work почти не видно)
+    const gl = document.querySelector('.ghosts');
+    gl.style.visibility = 'hidden';
+    gl.querySelectorAll('video').forEach(v => v.pause());
     const shot = SHOTS[id];
     // с главной в About — сначала цветной кадр резко вырывается из темноты, потом уже тень и негатив
     const fromDark = id === 'about' && current === 'home';
-    flashImg.src = shot.src();
+    const src = shot.src();
+    if (flashImg.getAttribute('src') !== src) flashImg.src = src;   // то же фото — не перезагружаем
     flash.dataset.shot = id;
     // начало: в Work — три резких кадра засвета (перебой плёнки); в About (photoOnly) — сразу кадры фото
     const lead = fromDark ? FIRST : shot.photoOnly ? 0 : BLINK;
