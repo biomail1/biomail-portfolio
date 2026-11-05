@@ -105,4 +105,76 @@
     requestAnimationFrame(loop);
   }
   if (!reduced) requestAnimationFrame(loop);
+
+  // 07.11 «царапины, как на плёнке, хаотично в разных местах, на оверлее»: отдельный холст поверх ВСЕГО сайта
+  // (проходят и по фону, и по видео; нажатия не ловит). Переделано по рисунку пользователя: НЕ длинные полосы,
+  // а МАЛЕНЬКИЕ изогнутые царапинки 10–36 px — дужки, скобки, крючки, повёрнутые как попало, в разных местах экрана;
+  // в основном светлые, иногда тёмные; мелькают на 2–5 кадров, иногда по 2–3 сразу. ~24 к/с, рисуем только пока есть.
+  if (reduced) return;
+  // 07.11 «слишком часто, потоньше, реже, максимум по 2 на экране»: rate 2.2 → 0.8, толщина 0.7–1.3 → 0.45–0.85, max 2
+  const SC = { rate: .8, burst: .2, len: [10, 36], max: 2, w: [.45, .85] };   // появлений в секунду, доля пар, длина, px
+  const sc = document.createElement('canvas');
+  sc.className = 'film-scratches';
+  sc.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(sc);
+  const sctx = sc.getContext('2d');
+  let W = 0, H = 0, dpr = 1;
+  const fit = () => {
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    sc.width = Math.round(W * dpr); sc.height = Math.round(H * dpr);
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  fit();
+  addEventListener('resize', fit);
+
+  const live = [];
+  // одна царапинка: короткий изогнутый штрих (кубическая кривая) — дужка «(», крючок «⌐», галочка; угол любой
+  function scratch(x, y) {
+    const dark = Math.random() < .2;
+    const L = rand(...SC.len), ang = rand(0, Math.PI * 2);
+    const dx = Math.cos(ang), dy = Math.sin(ang), nx = -dy, ny = dx;   // направление и перпендикуляр
+    const b1 = rand(-.6, .6) * L, b2 = Math.random() < .35 ? -b1 * rand(.6, 1.4) : rand(-.6, .6) * L;   // изгиб: дужка или крючок
+    const p = [
+      [x, y],
+      [x + dx * L * .33 + nx * b1, y + dy * L * .33 + ny * b1],
+      [x + dx * L * .66 + nx * b2, y + dy * L * .66 + ny * b2],
+      [x + dx * L, y + dy * L],
+    ];
+    return { p, dark, w: rand(...SC.w), a: dark ? rand(.3, .55) : rand(.25, .6), life: rand(60, 210) };
+  }
+  function spawnScratches(t) {
+    const n = Math.min(Math.random() < SC.burst ? 2 : 1, SC.max - live.length);   // на экране не больше SC.max
+    for (let i = 0; i < n; i++) {
+      const s = scratch(rand(W * .04, W * .96), rand(H * .04, H * .96));   // каждая — в своём случайном месте
+      s.born = t; live.push(s);
+    }
+  }
+  function drawScratch(s) {
+    sctx.globalAlpha = s.a * (Math.random() < .25 ? .45 : 1);   // лёгкое мерцание, как у пыли на плёнке
+    sctx.strokeStyle = s.dark ? 'rgb(8,10,10)' : 'rgb(236,236,226)';
+    sctx.lineWidth = s.w;
+    sctx.lineCap = 'round';
+    const [a, b, c, d] = s.p;
+    sctx.beginPath(); sctx.moveTo(a[0], a[1]); sctx.bezierCurveTo(b[0], b[1], c[0], c[1], d[0], d[1]); sctx.stroke();
+  }
+  let nextScratch = performance.now() + rand(300, 1500), lastDraw = 0, drawn = false;
+  function scratchLoop(t) {
+    if (!document.hidden && t >= nextScratch) {
+      spawnScratches(t);
+      nextScratch = t - Math.log(1 - Math.random()) * 1000 / SC.rate;   // случайные (пуассоновские) паузы
+    }
+    for (let i = live.length - 1; i >= 0; i--) if (t - live[i].born > live[i].life) live.splice(i, 1);
+    if (t - lastDraw > 41) {   // ~24 кадра в секунду, как плёнка
+      lastDraw = t;
+      if (live.length || drawn) {
+        sctx.clearRect(0, 0, W, H);
+        live.forEach(drawScratch);
+        sctx.globalAlpha = 1;
+        drawn = live.length > 0;
+      }
+    }
+    requestAnimationFrame(scratchLoop);
+  }
+  requestAnimationFrame(scratchLoop);
 })();

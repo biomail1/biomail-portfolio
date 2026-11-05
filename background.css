@@ -49,3 +49,6 @@
 @media (prefers-reduced-motion: reduce) {
   .bg-grain { animation: none; }
 }
+
+/* царапины плёнки — холст поверх всего сайта (рисует background.js), нажатия пропускает насквозь */
+.film-scratches { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 40; pointer-events: none; }
