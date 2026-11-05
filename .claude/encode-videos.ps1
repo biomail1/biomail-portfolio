@@ -29,7 +29,19 @@ foreach ($c in $clips) {
   # копия для Home: обесцвечена на 80%, контраст, лёгкое размытие, маленькая и лёгкая
   $g = Join-Path $home_ "$($c.n).mp4"
   $small = if ($c.n -eq 'okrug-street') { 'scale=360:-2' } else { 'scale=640:-2' }
-  & ffmpeg -v error -y -i $out -vf "$small,hue=s=0.2,eq=contrast=1.35:brightness=-0.03,gblur=sigma=1.2" @x264 -crf 30 -maxrate 700k -bufsize 1400k $g
+  # «плёночный» тон в цветах сайта (06.11, «тёмные кадры — обыграй цветокором, размой края, видна контрастность»):
+  # без цвета → тени подняты, светлое прижато (мягче контраст, тёмные кадры читаются) → тени холодные, свет тёплый
+  # оливковый → края кадра уходят в темноту (виньетка) → лёгкое размытие. Было: hue=s=0.2,eq=contrast=1.35:brightness=-0.03,gblur=1.2
+  # 06.11 «поиграемся с цветами» — пользователь выбрал из 6 вариантов E «teal + orange» (киношный: холодные
+  # сине-бирюзовые тени, тёплый свет, немного своего цвета). Было: оливковый (hue=s=0 + colorbalance … rh=.10:gh=.09:bh=-.10)
+  $look = "$small,hue=s=0.35,curves=all='0/0 0.18/0.26 0.5/0.52 1/0.82',colorbalance=rs=-0.18:gs=0.02:bs=0.20:rh=0.18:gh=0.06:bh=-0.16,vignette=angle=PI/3.2,gblur=sigma=1.4"
+  if ($c.n -eq 'okrug-street') {
+    # на Home из okrug вырезан кусок 1.47–5.0 с (Stone Island крупно и парень с собакой на улице) — просьба пользователя 06.11
+    $fc = "[0:v]trim=0:1.4667,setpts=PTS-STARTPTS[a];[0:v]trim=start=5.0,setpts=PTS-STARTPTS[b];[a][b]concat=n=2:v=1[c];[c]$look[o]"
+    & ffmpeg -v error -y -i $out -filter_complex $fc -map '[o]' @x264 -crf 30 -maxrate 700k -bufsize 1400k $g
+  } else {
+    & ffmpeg -v error -y -i $out -vf $look @x264 -crf 30 -maxrate 700k -bufsize 1400k $g
+  }
   if ($LASTEXITCODE) { throw "ffmpeg failed: home $($c.n)" }
   "{0,-14} work {1,5:N2} MB   home {2,5:N2} MB" -f $c.n, ((Get-Item $out).Length/1MB), ((Get-Item $g).Length/1MB)
 }

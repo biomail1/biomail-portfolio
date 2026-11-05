@@ -183,7 +183,9 @@
 </div>
 <div class="work-flare" aria-hidden="true"></div><div class="work-blink" aria-hidden="true"></div>
 <!-- начало перехода Home → About: цветной кадр вырывается из темноты (на телефоне обрезается по вертикали) -->
-<div class="about-first" aria-hidden="true"><img src="assets/about-photo.jpg" alt=""><div class="work-grain"></div></div><script src="background.js"></script>
+
+<!-- переход в About: кусок видео — пёс лает и бросается зубами в камеру (лай синим, бросок негативом — уже в файле) -->
+<div class="dog-burst" aria-hidden="true"><video src="assets/about-bark.mp4" muted playsinline preload="auto" disablepictureinpicture></video><div class="work-grain"></div></div><script src="background.js"></script>
 <script>
   // зерно поверх силуэта Work — тот же тайл, что сгенерировал фон
   document.querySelectorAll('.work-grain').forEach(g => { g.style.backgroundImage = document.querySelector('.bg-grain').style.backgroundImage; });
@@ -244,7 +246,9 @@
     document.querySelector('.nav-foot').hidden = id !== 'work';   // нижнее меню — только в длинном Work
     links.forEach(a => a.hash === '#' + id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
     window.scrollTo({ top: 0, behavior: 'instant' });
-    try { push ? history.pushState(null, '', '#' + id) : history.replaceState(null, '', '#' + id); } catch (e) {}
+    // на главной адрес чистый (biomail.art, без #home); у разделов — #work и т. п. (работает «назад» и ссылка на раздел)
+    const url = id === 'home' ? location.pathname + location.search : '#' + id;
+    try { push ? history.pushState(null, '', url) : history.replaceState(null, '', url); } catch (e) {}
   }
   show(location.hash.slice(1));
   addEventListener('popstate', () => show(location.hash.slice(1)));   // кнопка «назад» браузера
@@ -287,30 +291,26 @@
   const SHOTS = {
     work: { src: () => 'assets/work-photo.jpg', neg: OLIVE_NEG },
     // photoOnly: акцент только на фото — без вспышки, засвета и рывка страницы (красный film burn — отвергнут)
-    about: { src: () => phone.matches ? 'assets/about-strip.jpg' : 'assets/about-photo.jpg', neg: CYAN_NEG, photoOnly: true },
+    // (About здесь нет: туда ведёт свой переход — клип с псом, playDog)
     contact: { src: () => 'assets/contact-photo.jpg', neg: WATER_NEG, photoOnly: true },
   };
 
-  const first = document.querySelector('.about-first'), firstImg = first.querySelector('img');
-  const FIRST = 180;   // цветной кадр в начале перехода Home → About, мс
   let burstToken = 0;
   // фото переходов готовим заранее (иначе на телефоне первые кадры перехода уходили на распаковку фото)
   const warmShots = Object.values(SHOTS).map(s => { const im = new Image(); im.src = s.src(); im.decode().catch(() => {}); return im; });
   function playBurst(id) {
-    [flash, flashSil, flashImg, flare, blink, page, first, firstImg].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+    [flash, flashSil, flashImg, flare, blink, page].forEach(el => el.getAnimations().forEach(a => a.cancel()));
     // видео-«призраки» Home сразу гасим и ставим на паузу — телефону не тянуть их вместе с короткими резкими
     // кадрами перехода (иначе он пропускает кадры и переход в Work почти не видно)
     const gl = document.querySelector('.ghosts');
     gl.style.visibility = 'hidden';
     gl.querySelectorAll('video').forEach(v => v.pause());
     const shot = SHOTS[id];
-    // с главной в About — сначала цветной кадр резко вырывается из темноты, потом уже тень и негатив
-    const fromDark = id === 'about' && current === 'home';
     const src = shot.src();
     if (flashImg.getAttribute('src') !== src) flashImg.src = src;   // то же фото — не перезагружаем
     flash.dataset.shot = id;
-    // начало: в Work — три резких кадра засвета (перебой плёнки); в About (photoOnly) — сразу кадры фото
-    const lead = fromDark ? FIRST : shot.photoOnly ? 0 : BLINK;
+    // начало: в Work — три резких кадра засвета (перебой плёнки); в Contact (photoOnly) — сразу кадры фото
+    const lead = shot.photoOnly ? 0 : BLINK;
     if (!shot.photoOnly) {
       blink.animate(hard([{ opacity: .95 }, { opacity: .1, offset: .33 }, { opacity: .7, offset: .66 }, { opacity: 0 }]), { duration: BLINK });
     }
@@ -319,32 +319,15 @@
       { translate: '0 0' }, { translate: shot.photoOnly ? '0 0' : '0 -18px', offset: .06 }, { translate: '0 0', offset: .2 },
       { translate: '-10px 6px', offset: .38 }, { translate: '12px -8px', offset: .48 }, { translate: '0 0', offset: .56 }, { translate: '0 0' },
     ]), { duration: DURATION + lead });
-    // при fromDark основной переход стартует чуть раньше конца цветного кадра — его первый (тёмный) кусок
-    // совпадает с хвостом цветного кадра, и пауза в темноте перед негативом короткая
-    const t = { duration: DURATION, delay: fromDark ? lead - DURATION * .2 : lead };
+    const t = { duration: DURATION, delay: lead };
     // финальный масштаб — как у оверлея раздела (свой на компьютере и телефоне);
     // рывок — резко до 2.3×, как в выбранном демо, и уже потом силуэт встаёт оверлеем
     const hold = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hold-' + id)) || 1.5;
     const burst = Math.max(2.3, hold * 1.53);
     const run = flash.animate(hard([
-      // при fromDark первый кадр (серая тень) заменяет цветное фото — тень не показываем
-      { opacity: 0 }, { opacity: fromDark ? 0 : id === 'work' ? .8 : .95, offset: .06 }, { opacity: 0, offset: .2 },
+      { opacity: 0 }, { opacity: id === 'work' ? .8 : .95, offset: .06 }, { opacity: 0, offset: .2 },
       { opacity: .85, offset: .38 }, { opacity: .7, offset: .48 }, { opacity: 0, offset: .58 }, { opacity: 0 },
     ]), t);
-    if (fromDark) {
-      // цветной кадр (до основного перехода, FIRST мс): из темноты тусклый, рывком ярче и ближе, обрыв в темноту
-      const f = { duration: FIRST + DURATION * .12 };
-      first.animate(hard([{ opacity: 1 }, { opacity: 0, offset: .75 }, { opacity: 0 }]), f);
-      // приглушённый цвет и лёгкое размытие — кадр вписан в фон, а не лежит поверх
-      firstImg.animate(hard([
-        // ...а перед обрывом — резкий скачок по масштабу (кадр «влетает» в зрителя)
-        { filter: 'saturate(.55) brightness(.3) contrast(1.3) blur(4px)', transform: 'scale(1)' },
-        { filter: 'saturate(.6) brightness(.55) contrast(1.25) blur(3px)', transform: 'scale(1.03)', offset: .2 },
-        { filter: 'saturate(.7) brightness(.8) contrast(1.15) blur(1.5px)', transform: 'scale(1.06)', offset: .38 },
-        { filter: 'saturate(.7) brightness(.85) contrast(1.15) blur(2px)', transform: 'scale(1.75)', offset: .58 },
-        { filter: 'saturate(.7) brightness(.85) contrast(1.15) blur(2px)', transform: 'scale(1.75)' },
-      ]), f);
-    }
     flashSil.animate(hard([
       // translate — дрожание кадра: силуэт на каждом кадре чуть смещён
       { transform: 'scale(1)', translate: '0 0' }, { transform: 'scale(1)', translate: '6px -4px', offset: .12 },
@@ -694,6 +677,56 @@
   addEventListener('keydown', e => { if (e.key === 'Escape' && viewer.classList.contains('open')) closeViewer(); });
 
   // нажатие на пункт: открыть его раздел (в Work — через вспышку); на уже открытом — просто наверх
+  // переход на Home (06.11): открытый раздел мигает, как плёнка с перебоем, и гаснет в темноту;
+  // из темноты проступает главная (тоже с перебоем, как лампа). Без фото — главная остаётся тёмной
+  function playHome() {
+    const token = burstToken;
+    page.getAnimations().forEach(a => a.cancel());
+    const out = page.animate(hard([
+      { opacity: 1 }, { opacity: .25, offset: .14 }, { opacity: .85, offset: .26 }, { opacity: .08, offset: .42 },
+      { opacity: .45, offset: .55 }, { opacity: 0, offset: .7 }, { opacity: 0 },
+    ]), { duration: 300, fill: 'forwards' });
+    out.finished.then(() => {
+      if (token !== burstToken) { out.cancel(); return; }
+      show('home', true);
+      out.cancel();
+      page.animate(hard([
+        { opacity: 0 }, { opacity: 0, offset: .3 }, { opacity: .35, offset: .45 }, { opacity: .1, offset: .55 },
+        { opacity: .7, offset: .7 }, { opacity: .5, offset: .82 }, { opacity: 1 },
+      ]), { duration: 420 });
+    }).catch(() => {});
+  }
+  // переход в About (06.11, «не стоп-кадр, а быстрая фаза, где пёс лает и бросается зубами в кадр»):
+  // играет сам кусок видео (0.36 с, 50 к/с) — лай в синем тоне About, бросок вспыхивает негативом; на броске
+  // кадр рывком летит в зрителя, и тут же открывается About
+  const dog = document.querySelector('.dog-burst'), dogVid = dog.querySelector('video');
+  dogVid.muted = true;
+  const DOG_SPEED = 1.7;   // клип играет в 1.7 раза быстрее (0.36 с → ~0.21 с) — «сделай быстрее»
+  function playDog() {
+    const token = burstToken;
+    const gl = document.querySelector('.ghosts');
+    gl.style.visibility = 'hidden';
+    gl.querySelectorAll('video').forEach(v => v.pause());
+    [dog, dogVid, page].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+    dogVid.pause();
+    dogVid.currentTime = 0;
+    const go = () => {
+      if (token !== burstToken) return;
+      sections.forEach(s => { s.hidden = true; });   // переход идёт по тёмному фону
+      const D = (dogVid.duration || .36) * 1000 / DOG_SPEED;
+      // бросок начинается на 72% клипа — с него рывок масштаба и тряска страницы, как в Work
+      dog.animate(hard([{ opacity: .95 }, { opacity: .95, offset: .9 }, { opacity: .5, offset: .96 }, { opacity: 0 }]), { duration: D + 60 });
+      dogVid.animate([
+        { transform: 'scale(1)', easing: 'linear' }, { transform: 'scale(1.06)', offset: .7, easing: 'steps(1, end)' },
+        { transform: 'scale(1.25)', translate: '-6px 4px', offset: .72, easing: 'steps(1, end)' },
+        { transform: 'scale(1.6)', translate: '8px -5px', offset: .84, easing: 'steps(1, end)' },
+        { transform: 'scale(2.1)', translate: '0 0' },
+      ], { duration: D });
+      setTimeout(() => { if (token === burstToken) show('about', true); }, D * .94);
+    };
+    dogVid.playbackRate = DOG_SPEED;
+    dogVid.play().then(go, () => { if (token === burstToken) show('about', true); });
+  }
   links.forEach(a => a.addEventListener('click', e => {
     e.preventDefault();
     const id = a.hash.slice(1);
@@ -703,7 +736,9 @@
       if (sections.every(s => s.hidden)) show(id); else window.scrollTo({ top: 0 });
       return;
     }
-    if (SHOTS[id] && !reduced) playBurst(id);
+    if (id === 'about' && !reduced) playDog();
+    else if (SHOTS[id] && !reduced) playBurst(id);
+    else if (id === 'home' && !reduced) playHome();
     else show(id, true);
   }));
 </script>
