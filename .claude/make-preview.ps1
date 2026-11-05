@@ -5,7 +5,7 @@ $src = [IO.File]::ReadAllText((Join-Path $root 'index.html'), [Text.Encoding]::U
 
 $drop = '^\s*(<!doctype html>|<html[^>]*>|</html>|<head>|</head>|<body>|</body>|<meta charset[^>]*>|<meta name="viewport"[^>]*>)\s*$'
 $lines = $src -split "`r?`n" | Where-Object { $_ -notmatch $drop }
-$out = ($lines -join "`n") -replace '<title>Portfolio</title>', "<title>Portfolio Preview</title>`n<style>:root { color-scheme: dark; }</style>"
+$out = ($lines -join "`n") -replace '<title>biomail</title>', "<title>biomail</title>`n<style>:root { color-scheme: dark; }</style>"
 
 [IO.File]::WriteAllText((Join-Path $root 'phone-preview.html'), $out, (New-Object Text.UTF8Encoding($false)))
 Write-Host "phone-preview.html updated"
