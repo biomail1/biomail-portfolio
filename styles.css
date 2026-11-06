@@ -29,6 +29,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { background: var(--bg); scroll-behavior: smooth; overflow-x: hidden; }   /* рывки перехода не дают прокрутки вбок */
+html { touch-action: pan-x pan-y; }   /* без зума двойным касанием и щипком (см. viewport в index.html) */
 /* body обязательно прозрачный: фон с полосами (.bg, z-index: -1) рисуется под ним, тёмный цвет задан на html.
    Если хостинг/обёртка подставит body свой фон (у страниц Claude это белый), он закроет полосы — поэтому !important */
 body { background: transparent !important; color: var(--fg); font-family: var(--font); font-weight: var(--weight); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }

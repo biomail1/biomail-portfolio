@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script>
+  // Без приближения пальцами: при зуме тяжёлый фон (зерно, фильтры) переполнял память телефона — страница вылетала
+  // в серый экран, а браузер Instagram писал «не использует безопасное соединение». Safari игнорирует user-scalable=no,
+  // поэтому жест «щипок» гасим и тут.
+  ['gesturestart', 'gesturechange'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
+  document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+</script>
 <meta name="theme-color" content="#05090b">
 <title>biomail</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
