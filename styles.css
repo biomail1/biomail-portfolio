@@ -387,7 +387,8 @@ body { position: relative; }
    как кадры на контактном листе вразбежку; между колонками широкая щель по центру, в ней всё время виден силуэт —
    он подглядывает между проектами (скрипт в этом режиме держит глаза на месте, а не ищет просветы) */
 @media (min-width: 1000px) {
-  #work {
+  /* :not([hidden]) — иначе display: grid перебивает hidden и Work виден на всех вкладках */
+  #work:not([hidden]) {
     display: grid; grid-template-columns: repeat(2, minmax(0, 520px)); justify-content: center; align-items: start;
     column-gap: clamp(110px, 13vw, 240px); row-gap: 160px;
     padding-bottom: calc(32vh + 32px);   /* запас под сдвинутую правую колонку */
