@@ -216,7 +216,7 @@
 <!-- начало перехода Home → About: цветной кадр вырывается из темноты (на телефоне обрезается по вертикали) -->
 
 <!-- переход в About: кусок видео — пёс лает и бросается зубами в камеру (лай синим, бросок негативом — уже в файле) -->
-<div class="dog-burst" aria-hidden="true"><video src="assets/about-bark.mp4" muted playsinline preload="auto" disablepictureinpicture></video><div class="work-grain"></div></div><script src="background.js"></script>
+<div class="dog-burst" aria-hidden="true"><canvas class="dog-fill" width="48" height="27"></canvas><video src="assets/about-bark.mp4" muted playsinline preload="auto" disablepictureinpicture></video><div class="work-grain"></div></div><script src="background.js"></script>
 <script>
   // зерно поверх силуэта Work — тот же тайл, что сгенерировал фон
   document.querySelectorAll('.work-grain').forEach(g => { g.style.backgroundImage = document.querySelector('.bg-grain').style.backgroundImage; });
@@ -737,12 +737,23 @@
   const dog = document.querySelector('.dog-burst'), dogVid = dog.querySelector('video');
   dogVid.muted = true;
   const DOG_SPEED = 1.7;   // клип играет в 1.7 раза быстрее (0.36 с → ~0.21 с) — «сделай быстрее»
+  // компьютер: бока заполняет тот же кадр, растянутый и размытый (холст 48×27, размытие — CSS) — каждый кадр видео
+  const dogFill = dog.querySelector('.dog-fill'), fillCtx = dogFill.getContext('2d');
+  function drawFill() {
+    if (dogVid.paused || dogVid.ended || phone.matches) return;
+    const vw = dogVid.videoWidth, vh = dogVid.videoHeight;
+    if (vw) {   // как cover: средняя полоса вертикального кадра растягивается на 16:9
+      const sh = vw * 27 / 48;
+      fillCtx.drawImage(dogVid, 0, (vh - sh) / 2, vw, sh, 0, 0, 48, 27);
+    }
+    requestAnimationFrame(drawFill);
+  }
   function playDog() {
     const token = burstToken;
     const gl = document.querySelector('.ghosts');
     gl.style.visibility = 'hidden';
     gl.querySelectorAll('video').forEach(v => v.pause());
-    [dog, dogVid, page].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+    [dog, dogVid, dogFill, page].forEach(el => el.getAnimations().forEach(a => a.cancel()));
     dogVid.pause();
     dogVid.currentTime = 0;
     const go = () => {
@@ -751,12 +762,15 @@
       const D = (dogVid.duration || .36) * 1000 / DOG_SPEED;
       // бросок начинается на 72% клипа — с него рывок масштаба и тряска страницы, как в Work
       dog.animate(hard([{ opacity: .95 }, { opacity: .95, offset: .9 }, { opacity: .5, offset: .96 }, { opacity: 0 }]), { duration: D + 60 });
-      dogVid.animate([
+      const jerk = [
         { transform: 'scale(1)', easing: 'linear' }, { transform: 'scale(1.06)', offset: .7, easing: 'steps(1, end)' },
         { transform: 'scale(1.25)', translate: '-6px 4px', offset: .72, easing: 'steps(1, end)' },
         { transform: 'scale(1.6)', translate: '8px -5px', offset: .84, easing: 'steps(1, end)' },
         { transform: 'scale(2.1)', translate: '0 0' },
-      ], { duration: D });
+      ];
+      dogVid.animate(jerk, { duration: D });
+      dogFill.animate(jerk, { duration: D });   // цветной фон рвётся вместе с псом
+      drawFill();
       setTimeout(() => { if (token === burstToken) show('about', true); }, D * .94);
     };
     dogVid.playbackRate = DOG_SPEED;

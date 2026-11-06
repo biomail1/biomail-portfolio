@@ -495,11 +495,19 @@ body { position: relative; }
 .dog-burst { position: fixed; inset: 0; z-index: 5; pointer-events: none; opacity: 0; overflow: hidden; mix-blend-mode: screen; }
 .dog-burst video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 70%; }
 .dog-burst .work-grain { opacity: .12; }
+.dog-fill { display: none; }
 @media (min-width: 641px) {
+  /* компьютер (07.11, «растянуть лай по цвету»): пёс чёткий по центру во всю высоту, а бока заполняет
+     тот же кадр, растянутый на весь экран и сильно размытый (холст .dog-fill, рисует скрипт каждый кадр) —
+     вместо узкой полосы на чёрном; края чёткого видео мягко растворяются в этот цвет */
+  .dog-fill {
+    display: block; position: absolute; inset: -8%; width: 116%; height: 116%;
+    filter: blur(28px) saturate(1.15) brightness(.85); transform-origin: 50% 70%;
+  }
   .dog-burst video {
-    object-fit: contain;
-    -webkit-mask-image: radial-gradient(ellipse 30% 62% at 50% 50%, #000 55%, transparent 100%);
-    mask-image: radial-gradient(ellipse 30% 62% at 50% 50%, #000 55%, transparent 100%);
+    left: 0; right: 0; margin: 0 auto; width: calc(100vh * 9 / 16); object-fit: cover;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
   }
 }
 /* резкая вспышка в самом начале перехода — тёплый белый, как свечение меню */

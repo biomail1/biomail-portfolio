@@ -1,7 +1,7 @@
 ﻿# Делает облегчённые копии фото для сайта: до 2000px по длинной стороне, JPEG 85%, с учётом поворота из EXIF.
 # ARW (RAW Sony) читается через кодек Windows (WIC), если он установлен (Raw Image Extension).
 param(
-  [string]$Src = "C:\Users\ivanb\OneDrive\Desktop\фото сайт",
+  [string]$Src = "C:\Users\ivanb\OneDrive\Desktop\Фото\фото сайт",
   [int]$Max = 2000
 )
 Add-Type -AssemblyName PresentationCore, WindowsBase

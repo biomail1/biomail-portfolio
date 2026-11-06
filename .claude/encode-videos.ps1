@@ -14,8 +14,8 @@ $D = "$env:USERPROFILE\OneDrive\Desktop"
 $T = "$env:USERPROFILE\Downloads\Telegram Desktop"
 # name, source, from, duration, video filter (размер/обрезка)
 $clips = @(
-  @{ n = 'vhs';          src = "$D\kirilov\vhs_4mp4.mp4";        ss = 10; t = 6;  vf = 'scale=1280:-2' },
-  @{ n = 'korzh';        src = "$D\фото сайт\video 3.mp4";       ss = 10; t = 6;  vf = 'scale=1280:-2' },
+  @{ n = 'vhs';          src = "$D\Монтаж\kirilov\vhs_4mp4.mp4";        ss = 10; t = 6;  vf = 'scale=1280:-2' },
+  @{ n = 'korzh';        src = "$D\Фото\фото сайт\video 3.mp4";       ss = 10; t = 6;  vf = 'scale=1280:-2' },
   @{ n = 'okrug-street'; src = "$T\street reels 1 .mp4";         ss = 1;  t = 7;  vf = 'scale=720:-2' },
   # amsterdam: в исходнике чёрная рамка-плёнка со скруглёнными углами — обрезаем 5.5% (как было через CSS)
   @{ n = 'amstr';        src = "$T\amstr_288mp4.mp4";            ss = 34; t = 14; vf = 'crop=trunc(iw/1.055/2)*2:trunc(ih/1.055/2)*2,scale=1280:-2' },
