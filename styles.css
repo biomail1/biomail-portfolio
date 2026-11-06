@@ -613,4 +613,4 @@ body { position: relative; }
 .work-eyes { visibility: hidden; }
 .sil-flash { position: absolute; inset: 0; isolation: isolate; mix-blend-mode: multiply; opacity: 0; pointer-events: none; }
 .work-top .silhouette .sil-flash img { filter: grayscale(1) contrast(2.2) brightness(1.1) blur(2.5px); }
-.sil-flash i { position: absolute; inset: 0; background: #ff1010; mix-blend-mode: multiply; }
+.sil-flash i { position: absolute; inset: 0; background: #d07a28; /* бронза (07.11); было #ff1010 — кровавый */ mix-blend-mode: multiply; }
