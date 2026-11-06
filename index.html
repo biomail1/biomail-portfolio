@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script>
+  // Без приближения пальцами: при зуме тяжёлый фон (зерно, фильтры) переполнял память телефона — страница вылетала
+  // в серый экран, а браузер Instagram писал «не использует безопасное соединение». Safari игнорирует user-scalable=no,
+  // поэтому жест «щипок» гасим и тут.
+  ['gesturestart', 'gesturechange'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
+  document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+</script>
 <meta name="theme-color" content="#05090b">
 <title>biomail</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -753,8 +760,28 @@
       setTimeout(() => { if (token === burstToken) show('about', true); }, D * .94);
     };
     dogVid.playbackRate = DOG_SPEED;
-    dogVid.play().then(go, () => { if (token === burstToken) show('about', true); });
+    // клип не успел загрузиться (медленная сеть, iPhone не качает видео заранее) — не ждём: через 350 мс открываем
+    // About без пса. Раньше play() висел, человек жал снова, новое нажатие отменяло переход — и так до 10 раз
+    let started = false;
+    const fallback = setTimeout(() => {
+      if (started || token !== burstToken) return;
+      started = true; dogVid.pause(); show('about', true);
+    }, 350);
+    dogVid.play().then(() => {
+      if (started) { dogVid.pause(); return; }
+      started = true; clearTimeout(fallback); go();
+    }, () => {
+      if (started) return;
+      started = true; clearTimeout(fallback);
+      if (token === burstToken) show('about', true);
+    });
   }
+  // клип пса качаем целиком заранее (347 КБ) и играем из памяти: iPhone игнорирует preload и иначе начинает
+  // загрузку только по нажатию
+  addEventListener('load', () => setTimeout(() => {
+    fetch(dogVid.currentSrc || dogVid.src).then(r => r.ok ? r.blob() : Promise.reject())
+      .then(b => { if (dogVid.paused) dogVid.src = URL.createObjectURL(b); }).catch(() => {});
+  }, 1200));
   links.forEach(a => a.addEventListener('click', e => {
     e.preventDefault();
     const id = a.hash.slice(1);
