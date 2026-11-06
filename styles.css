@@ -570,3 +570,47 @@ body { position: relative; }
   .nav a.lit::after, .nav-foot a.lit::after { animation: none; }
   .work-grain, .work-overlay .silhouette { animation: none; }
 }
+
+/* просмотр фото: если у проекта одно фото — стрелки «назад/вперёд» не показываем (07.11) */
+.viewer.single .car-prev, .viewer.single .car-next { display: none; }
+
+/* 07.11 «чтобы люди видели, что там ещё есть фото»: на последнем превью проекта — «+N» (фото только в просмотре),
+   в просмотре внизу — «2 / 7»; оба мелко, шрифтом таймкода, как biomail */
+/* «+N» — вариант A «как меню» (выбрал пользователь из A/B/C; плашка с рамкой — «не под стиль сайта»):
+   шрифт меню, тёплое свечение и тонкая белая линия снизу, как у открытого раздела */
+.more-badge {
+  position: absolute; right: 10px; bottom: 10px; z-index: 2; pointer-events: none; padding: 0 0 3px;
+  font: var(--weight) 13px/1 var(--font); letter-spacing: .01em; color: #fff;
+  text-shadow: 0 0 3px rgba(var(--glow), 1), 0 0 10px rgba(var(--glow), .85), 0 0 22px rgba(var(--glow), .5);
+}
+.more-badge::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: #fff; box-shadow: 0 0 6px rgba(var(--glow), .9);
+}
+.car-count {
+  position: absolute; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); translate: -50% 0;
+  font: 400 11px/1 var(--label-font); letter-spacing: .12em; color: rgba(255, 255, 255, .6); pointer-events: none;
+}
+
+/* ЭКСПЕРИМЕНТ 07.11: красные глаза силуэта Work — две светящиеся точки на глазах фото (места считает measureEyes),
+   за материалами; вспышки — скрипт (eyesBlink). Внутри .silhouette — трясутся и масштабируются вместе с ним */
+.work-eyes { position: absolute; inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen; }
+/* форма — узкие злые щёлки (по рисунку пользователя: левая «\», правая «/»): тонкая раскалённая линия,
+   вокруг узкое красное свечение без круглого ореола (круглое — «само свечение не нравится») */
+.work-eyes i {
+  position: absolute; top: var(--ey); width: calc(var(--ew) * 1.05); height: calc(var(--ew) * .13);
+  translate: -50% -50%; border-radius: 50%;
+  background: linear-gradient(90deg, transparent 0, rgba(255, 30, 20, .85) 22%, rgb(255, 210, 200) 50%, rgba(255, 30, 20, .85) 78%, transparent 100%);
+  box-shadow: 0 0 4px 1px rgba(255, 25, 15, .9), 0 0 12px 2px rgba(200, 0, 0, .45);
+}
+.work-eyes i:first-child { left: var(--ex1); rotate: 20deg; }
+.work-eyes i:last-child { left: var(--ex2); rotate: -20deg; }
+
+/* 07.11 переделано: вместо светящихся щёлок — КРОВАВАЯ ТЁМНАЯ ВСПЫШКА СИЛУЭТА (из 4 цветов пользователь выбрал «кровавый
+   тёмный»): копия фото силуэта, обесцвеченная и контрастная, перекрашенная в красный (multiply) и наложенная «умножением»
+   на оверлей — просвет на миг темнеет, силуэт проступает тёмно-красным. Точки .work-eyes — невидимые метки глаз,
+   по ним скрипт понимает, что глаза в просвете (`eyesUncovered`) */
+.work-eyes { visibility: hidden; }
+.sil-flash { position: absolute; inset: 0; isolation: isolate; mix-blend-mode: multiply; opacity: 0; pointer-events: none; }
+.work-top .silhouette .sil-flash img { filter: grayscale(1) contrast(2.2) brightness(1.1) blur(2.5px); }
+.sil-flash i { position: absolute; inset: 0; background: #ff1010; mix-blend-mode: multiply; }

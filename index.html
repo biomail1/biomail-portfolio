@@ -44,7 +44,7 @@
   <section class="section" id="work">
     <div class="work-overlay" aria-hidden="true">
       <div class="work-fill"></div>
-      <div class="work-top"><div class="silhouette olive-neg"><img src="assets/work-photo.jpg" alt=""><div class="shade"></div></div></div>
+      <div class="work-top"><div class="silhouette olive-neg"><img src="assets/work-photo.jpg" alt=""><div class="shade"></div><div class="work-eyes" aria-hidden="true"><i></i><i></i></div><div class="sil-flash" aria-hidden="true"><img src="assets/work-photo.jpg" alt=""><i></i></div></div></div>
       <div class="work-grain"></div>
     </div>
     <!-- проект: заголовок, видео-«гифка», фото (data-i — номер фото в общем просмотре) -->
@@ -108,8 +108,7 @@
       <video class="work-video" src="assets/work/cars.mp4" width="1280" height="720" muted loop playsinline preload="none"
         disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
       <div class="work-thumbs">
-        <button type="button" data-i="7" class="wide" aria-label="Open photo 8"><img src="assets/work/cars-2.jpg" alt="" loading="lazy"></button>
-        <button type="button" data-i="8" class="wide" aria-label="Open photo 9"><img src="assets/work/cars-1.jpg" alt="" loading="lazy"></button>
+        <button type="button" data-i="7" class="wide" aria-label="Open photo 8"><img src="assets/work/cars-1.jpg" alt="" loading="lazy"></button>
       </div>
     </article>
     <span class="section-label" data-i18n="work">Work</span>
@@ -166,7 +165,7 @@
       <dl class="gear">
         <div><dt data-i18n="cMail">Email</dt><dd><a href="mailto:biomailjj@gmail.com">biomailjj@gmail.com</a></dd></div>
         <div><dt>Telegram</dt><dd><a href="https://t.me/vanek_bio" target="_blank" rel="noopener">@vanek_bio</a></dd></div>
-        <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/vanya_bilyi/" target="_blank" rel="noopener">@vanya_bilyi</a></dd></div>
+        <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/vanek.bilyi/" target="_blank" rel="noopener">@vanek.bilyi</a></dd></div>
       </dl>
       <!-- написать письмо: сервера нет — по кнопке открывается почта посетителя с готовым письмом (mailto) -->
       <form class="contact-form" novalidate>
@@ -202,10 +201,24 @@
     <img src="assets/work/okrug-1.jpg" width="1179" height="716" alt="" draggable="false" loading="lazy" decoding="async">
     <img src="assets/work/amstr-1.jpg" width="1820" height="1024" alt="" draggable="false" loading="lazy" decoding="async">
     <img src="assets/work/boxing-1.jpg" width="1150" height="656" alt="" draggable="false" loading="lazy" decoding="async">
-    <img src="assets/work/cars-2.jpg" width="1600" height="1066" alt="" draggable="false" loading="lazy" decoding="async">
     <img src="assets/work/cars-1.jpg" width="1600" height="911" alt="" draggable="false" loading="lazy" decoding="async">
+    <!-- доп. фото проектов: только в просмотре, на странице их нет; data-project = название проекта (.work-title) -->
+    <img src="assets/work/vhs-3.jpg" width="1561" height="1180" alt="" draggable="false" loading="lazy" decoding="async" data-project="vhs studio">
+    <img src="assets/work/vhs-4.jpg" width="1179" height="862" alt="" draggable="false" loading="lazy" decoding="async" data-project="vhs studio">
+    <img src="assets/work/events-3.jpg" width="1179" height="650" alt="" draggable="false" loading="lazy" decoding="async" data-project="events">
+    <img src="assets/work/events-4.jpg" width="1179" height="636" alt="" draggable="false" loading="lazy" decoding="async" data-project="events">
+    <img src="assets/work/events-5.jpg" width="1179" height="648" alt="" draggable="false" loading="lazy" decoding="async" data-project="events">
+    <img src="assets/work/events-6.jpg" width="1179" height="662" alt="" draggable="false" loading="lazy" decoding="async" data-project="events">
+    <img src="assets/work/events-7.jpg" width="900" height="1600" alt="" draggable="false" loading="lazy" decoding="async" data-project="events">
+    <img src="assets/work/clothing-2.jpg" width="1066" height="1600" alt="" draggable="false" loading="lazy" decoding="async" data-project="clothing">
+    <img src="assets/work/clothing-3.jpg" width="1066" height="1600" alt="" draggable="false" loading="lazy" decoding="async" data-project="clothing">
+    <img src="assets/work/clothing-4.jpg" width="1362" height="1600" alt="" draggable="false" loading="lazy" decoding="async" data-project="clothing">
+    <img src="assets/work/clothing-5.jpg" width="1200" height="1600" alt="" draggable="false" loading="lazy" decoding="async" data-project="clothing">
+    <img src="assets/work/clothing-6.jpg" width="1200" height="1600" alt="" draggable="false" loading="lazy" decoding="async" data-project="clothing">
+    <img src="assets/work/clothing-7.jpg" width="1068" height="1600" alt="" draggable="false" loading="lazy" decoding="async" data-project="clothing">
   </div>
   <div class="car-nav"><button type="button" class="car-prev" aria-label="Previous photo">←</button><button type="button" class="car-next" aria-label="Next photo">→</button></div>
+  <span class="car-count" aria-live="polite"></span>
 </div>
 
 <!-- вспышка перехода в Work -->
@@ -401,21 +414,36 @@
   const track = document.querySelector('.car-track');
   const slides = [...track.querySelectorAll('img')];
   const prevBtn = document.querySelector('.car-prev'), nextBtn = document.querySelector('.car-next');
+  // в просмотре листаются только фото открытого проекта (07.11): остальные слайды скрыты, active — номер среди видимых
+  let shown = slides;
   let active = 0;
   function markActive() {
     const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
     let best = 0, dist = Infinity;
-    slides.forEach((s, i) => {
+    shown.forEach((s, i) => {
       const r = s.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid);
       if (d < dist) { dist = d; best = i; }
     });
     active = best;
-    slides.forEach((s, i) => s.classList.toggle('is-active', i === best));
+    slides.forEach(s => s.classList.toggle('is-active', s === shown[best]));
     prevBtn.disabled = best === 0;
-    nextBtn.disabled = best === slides.length - 1;
+    nextBtn.disabled = best === shown.length - 1;
+    countEl.textContent = shown.length > 1 ? `${best + 1} / ${shown.length}` : '';   // «2 / 7» внизу просмотра
   }
+  const countEl = document.querySelector('.car-count');
+  // «+N» на последнем превью проекта — сколько ещё фото есть только в просмотре (07.11)
+  document.querySelectorAll('.work-project').forEach(p => {
+    const title = p.querySelector('.work-title').textContent.trim();
+    const extra = slides.filter(s => s.dataset.project === title).length;
+    const last = [...p.querySelectorAll('.work-thumbs button')].pop();
+    if (!extra || !last) return;
+    const tag = document.createElement('span');
+    tag.className = 'more-badge'; tag.textContent = '+' + extra; tag.setAttribute('aria-hidden', 'true');
+    last.appendChild(tag);
+    last.setAttribute('aria-label', last.getAttribute('aria-label') + ` (+${extra})`);
+  });
   function goTo(i) {
-    const s = slides[Math.max(0, Math.min(slides.length - 1, i))];
+    const s = shown[Math.max(0, Math.min(shown.length - 1, i))];
     track.scrollTo({ left: s.offsetLeft - (track.clientWidth - s.offsetWidth) / 2 });
   }
   let ticking = false;
@@ -594,6 +622,8 @@
   let eyeBase = 0, eyeDy = 0, eyeRaf = 0;
   const twoCols = matchMedia('(min-width: 1000px)');   // Work в две колонки (styles.css)
   const workSilImg = workTop.querySelector('img');
+  const workEyes = workTop.querySelector('.work-eyes');
+  const EYE_X = [.395, .61];   // глаза на work-photo.jpg: доли ширины (по высоте — PHOTO.eyes)
   function measureEyes() {
     // где глаза на экране без сдвига: рамка фото (на телефоне — весь экран, на компьютере — по высоте экрана),
     // в ней object-fit: cover, плюс масштаб силуэта вокруг 50% 45%
@@ -602,6 +632,14 @@
     const local = workSilImg.offsetTop + (ih - dh) * PHOTO.posY + PHOTO.eyes * dh;
     const s = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hold-scale')) || 1;
     eyeBase = H * .45 + (local - H * .45) * s;
+    // красные глаза (07.11): ставим точки на глаза фото — в координатах силуэта (до его масштаба, он общий)
+    // на компьютере фото стоит по центру через translate: -50% — offsetLeft его не учитывает
+    const shift = /^-50%/.test(getComputedStyle(workSilImg).translate) ? iw / 2 : 0;
+    const dw = PHOTO.w * k, offX = workSilImg.offsetLeft - shift + (iw - dw) * .5;
+    workEyes.style.setProperty('--ey', local.toFixed(1) + 'px');
+    workEyes.style.setProperty('--ex1', (offX + EYE_X[0] * dw).toFixed(1) + 'px');
+    workEyes.style.setProperty('--ex2', (offX + EYE_X[1] * dw).toFixed(1) + 'px');
+    workEyes.style.setProperty('--ew', (dw * .075).toFixed(1) + 'px');
   }
   function findGap() {
     // просветы по вертикали между материалами в пределах экрана; выбираем ближний к центру, широкие — чуть охотнее
@@ -638,6 +676,44 @@
     if (Math.abs(target - eyeDy) > .5) eyeRaf = requestAnimationFrame(eyesTick);
   }
   const kickEyes = () => { if (!eyeRaf) eyeRaf = requestAnimationFrame(eyesTick); };
+
+  // красные глаза силуэта (07.11, «в пробелах между материалами глаза мигают красным, будто смотрят сквозь экран»):
+  // лежат в слое силуэта ЗА материалами. Вспыхивают В МОМЕНТ, когда глаза оказались в просвете (их не закрывает
+  // ни одно видео/фото) — «они должны вспыхивать, когда попадают в пробел», а не по таймеру; если просвет долго
+  // стоит на месте — изредка (раз в 5–9 с) моргают снова. На первом экране не горят
+  // вспышка — кровавый тёмный силуэт (`.sil-flash`): через долю секунды после попадания глаз в просвет,
+  // коротко (~0.4 с) и с перебоем, как кадр-засвет
+  const silFlash = workTop.querySelector('.sil-flash');
+  function eyesFlash() {
+    setTimeout(() => {
+      if (current !== 'work' || !eyesUncovered()) return;   // пока ждали — просвет мог уйти
+      silFlash.getAnimations().forEach(a => a.cancel());
+      silFlash.animate(hard([
+        { opacity: 0 }, { opacity: .85, offset: .08 }, { opacity: .25, offset: .2 }, { opacity: 1, offset: .3 },
+        { opacity: 1, offset: .62 }, { opacity: .4, offset: .74 }, { opacity: .8, offset: .84 }, { opacity: 0, offset: .94 }, { opacity: 0 },
+      ]), { duration: rnd(360, 480) });
+    }, rnd(120, 200));
+  }
+  function eyesUncovered() {
+    // глаза в просвете: ни одно видео/фото не перекрывает точки глаз на экране
+    const pts = [...workEyes.children].map(i => { const r = i.getBoundingClientRect(); return [r.left, r.right, (r.top + r.bottom) / 2]; });
+    if (pts[0][2] < 0 || pts[0][2] > innerHeight) return false;
+    return !workMedia.some(m => {
+      const r = m.getBoundingClientRect();
+      return pts.some(([l, rr, y]) => y > r.top - 4 && y < r.bottom + 4 && rr > r.left && l < r.right);
+    });
+  }
+  let eyesWasOpen = false, eyesLast = 0, eyesNext = 0;
+  function eyesCheck() {
+    if (current !== 'work' || document.hidden || scrollY < innerHeight * .5) { eyesWasOpen = false; return; }
+    const open = eyesUncovered(), t = performance.now();
+    // только в момент попадания в просвет (без повторов, пока стоишь на месте)
+    if (open && !eyesWasOpen && t - eyesLast > 900) { eyesFlash(); eyesLast = t; }
+    eyesWasOpen = open;
+  }
+  // ПЕРЕКЛЮЧАТЕЛЬ ЭКСПЕРИМЕНТА (07.11): красная вспышка силуэта в просветах Work. false — выключить (как было до него)
+  const RED_FLASH = false;
+  if (RED_FLASH && !reduced) setInterval(eyesCheck, 120);
   if (!reduced) {
     new ResizeObserver(() => { measureEyes(); kickEyes(); }).observe(workTop);
     addEventListener('scroll', kickEyes, { passive: true });
@@ -694,10 +770,18 @@
   // превью → открыть просмотр на выбранном фото; закрыть — Close, Esc или клик по пустому месту
   const viewer = document.querySelector('.viewer');
   let opener = null;
-  function openViewer(i) {
+  function openViewer(i, project) {
+    // оставляем в ленте только фото этого проекта (по data-i его превью)
+    // + доп. фото проекта (в ленте с data-project = название проекта): идут после фото с превью, на странице их нет
+    const title = project && project.querySelector('.work-title').textContent.trim();
+    const own = project ? [...project.querySelectorAll('.work-thumbs button')].map(b => +b.dataset.i)
+      .concat(slides.map((s, k) => s.dataset.project === title ? k : -1).filter(k => k >= 0)) : slides.map((s, k) => k);
+    slides.forEach((s, k) => { s.style.display = own.includes(k) ? '' : 'none'; });
+    shown = slides.filter((s, k) => own.includes(k));
+    viewer.classList.toggle('single', shown.length < 2);   // одно фото — стрелки не нужны
     viewer.classList.add('open');
     document.documentElement.style.overflow = 'hidden';
-    track.style.scrollBehavior = 'auto'; goTo(i); track.style.scrollBehavior = '';
+    track.style.scrollBehavior = 'auto'; goTo(shown.indexOf(slides[i])); track.style.scrollBehavior = '';
     markActive();
     track.focus({ preventScroll: true });
   }
@@ -706,7 +790,7 @@
     document.documentElement.style.overflow = '';
     if (opener) opener.focus({ preventScroll: true });
   }
-  document.querySelectorAll('.work-thumbs button').forEach(b => b.addEventListener('click', () => { opener = b; openViewer(+b.dataset.i); }));
+  document.querySelectorAll('.work-thumbs button').forEach(b => b.addEventListener('click', () => { opener = b; openViewer(+b.dataset.i, b.closest('.work-project')); }));
   viewer.querySelector('.viewer-close').addEventListener('click', closeViewer);
   viewer.addEventListener('click', e => {
     if (track._dragged) { track._dragged = false; return; }
