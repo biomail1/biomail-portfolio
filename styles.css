@@ -377,8 +377,25 @@ body { position: relative; }
     -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 46%, #000 45%, transparent 100%);
     mask-image: radial-gradient(ellipse 50% 50% at 50% 46%, #000 45%, transparent 100%);
   }
+  /* 07.11 «по бокам контраст — сделай серый однотонный»: тёмная виньетка силуэта ложилась на серый тон
+     под проектами и давала пятна по краям; на компьютере её нет — фото и так растворяется своей маской */
+  .work-overlay:not(.about-overlay) .silhouette .shade { display: none; }
   /* колонка проектов шире — на широком экране было много пустого места по бокам */
   .work-project, .work-thumbs { width: min(860px, 100%); }
+}
+/* 07.11 «на компьютере проекты в 2 ряда, обыграй»: две колонки «лесенкой» — правая сдвинута вниз на треть экрана,
+   как кадры на контактном листе вразбежку; между колонками широкая щель по центру, в ней всё время виден силуэт —
+   он подглядывает между проектами (скрипт в этом режиме держит глаза на месте, а не ищет просветы) */
+@media (min-width: 1000px) {
+  #work {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 520px)); justify-content: center; align-items: start;
+    column-gap: clamp(110px, 13vw, 240px); row-gap: 160px;
+    padding-bottom: calc(32vh + 32px);   /* запас под сдвинутую правую колонку */
+  }
+  #work .work-project { width: 100%; }
+  #work .work-project.tall { width: min(calc(88svh * 9 / 16), 100%); justify-self: center; }
+  #work .work-project:nth-of-type(even) { translate: 0 32vh; }
+  #work .section-label { grid-column: 1 / -1; }
 }
 
 /* фон Contact — вода, холодный серебристый негатив без тонировки (тот же фильтр — WATER_NEG в скрипте) */

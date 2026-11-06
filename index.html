@@ -592,6 +592,7 @@
   const workMedia = [...document.querySelectorAll('#work .work-video, #work .work-thumbs button')];
   const PHOTO = { w: 1500, h: 2000, posY: .30, eyes: .49 };   // work-photo.jpg: object-position 50% 30%, глаза на 49% высоты
   let eyeBase = 0, eyeDy = 0, eyeRaf = 0;
+  const twoCols = matchMedia('(min-width: 1000px)');   // Work в две колонки (styles.css)
   const workSilImg = workTop.querySelector('img');
   function measureEyes() {
     // где глаза на экране без сдвига: рамка фото (на телефоне — весь экран, на компьютере — по высоте экрана),
@@ -604,6 +605,8 @@
   }
   function findGap() {
     // просветы по вертикали между материалами в пределах экрана; выбираем ближний к центру, широкие — чуть охотнее
+    // компьютер, две колонки: глаза остаются на месте — в щели между колонками (как на первом экране)
+    if (twoCols.matches) return eyeBase;
     const ih = innerHeight, spans = [];
     workMedia.forEach(m => { const r = m.getBoundingClientRect(); if (r.bottom > 0 && r.top < ih) spans.push([r.top, r.bottom]); });
     spans.sort((a, b) => a[0] - b[0]);
