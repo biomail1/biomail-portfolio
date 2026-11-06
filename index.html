@@ -712,7 +712,7 @@
     eyesWasOpen = open;
   }
   // ПЕРЕКЛЮЧАТЕЛЬ ЭКСПЕРИМЕНТА (07.11): красная вспышка силуэта в просветах Work. false — выключить (как было до него)
-  const RED_FLASH = false;
+  const RED_FLASH = true;
   if (RED_FLASH && !reduced) setInterval(eyesCheck, 120);
   if (!reduced) {
     new ResizeObserver(() => { measureEyes(); kickEyes(); }).observe(workTop);
